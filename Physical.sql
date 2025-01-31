@@ -2,7 +2,7 @@
  * ER/Studio Data Architect SQL Code Generation
  * Project :      DATA MODEL
  *
- * Date Created : Tuesday, December 17, 2024 18:39:30
+ * Date Created : Friday, January 31, 2025 11:13:21
  * Target DBMS : Microsoft SQL Server 2017
  */
 
@@ -16,8 +16,7 @@ CREATE TABLE ADR(
     ADR_LN_2    char(10)    NULL,
     CTY         char(10)    NULL,
     PST_CDE     char(10)    NULL,
-    CTY_1       char(10)    NULL,
-    CONSTRAINT PK4 PRIMARY KEY NONCLUSTERED (ADR_ID)
+    CTY_1       char(10)    NULL
 )
 
 go
@@ -37,8 +36,7 @@ CREATE TABLE AGY(
     ID          char(10)    NOT NULL,
     AGY_NME     char(10)    NULL,
     MAIN_CCT    char(10)    NULL,
-    CONTRACT    char(10)    NULL,
-    CONSTRAINT PK9 PRIMARY KEY NONCLUSTERED (ID)
+    CONTRACT    char(10)    NULL
 )
 
 go
@@ -57,8 +55,7 @@ go
 CREATE TABLE CNR(
     EMP_NMB     char(10)    NOT NULL,
     DAY_RAT     char(10)    NULL,
-    AGENCYID    char(10)    NOT NULL,
-    CONSTRAINT PK3 PRIMARY KEY NONCLUSTERED (EMP_NMB)
+    AGENCYID    char(10)    NOT NULL
 )
 
 go
@@ -76,8 +73,7 @@ go
 
 CREATE TABLE DEP(
     ID     char(10)    NOT NULL,
-    NME    char(10)    NULL,
-    CONSTRAINT PK7 PRIMARY KEY NONCLUSTERED (ID)
+    NME    char(10)    NULL
 )
 
 go
@@ -102,8 +98,7 @@ CREATE TABLE EMP(
     SURNAME      char(10)          NOT NULL,
     MEMBER       char(10)          NOT NULL,
     MANAGER      char(10)          NULL,
-    ADR_ID       char(10)          NOT NULL,
-    CONSTRAINT PK1 PRIMARY KEY NONCLUSTERED (EMP_NMB)
+    ADR_ID       char(10)          NOT NULL
 )
 
 go
@@ -122,8 +117,7 @@ go
 CREATE TABLE EMP_SKL_MTX(
     ID         char(10)    NOT NULL,
     EMP_NMB    char(10)    NOT NULL,
-    LVL        char(10)    NULL,
-    CONSTRAINT PK13 PRIMARY KEY NONCLUSTERED (ID, EMP_NMB)
+    LVL        char(10)    NULL
 )
 
 go
@@ -142,8 +136,7 @@ go
 CREATE TABLE FULL_TIME_EMP(
     EMP_NMB     char(10)    NOT NULL,
     SALARY      char(10)    NULL,
-    VCT_DAYS    char(10)    NULL,
-    CONSTRAINT PK2 PRIMARY KEY NONCLUSTERED (EMP_NMB)
+    VCT_DAYS    char(10)    NULL
 )
 
 go
@@ -160,12 +153,11 @@ go
  */
 
 CREATE TABLE SKL(
-    ID     char(10)          NOT NULL,
-    NME    char(10)          NOT NULL,
-    DSP    char(10)          NULL,
-    CTY    char(10)          NULL,
-    ZIP    numeric(18, 0)    NULL,
-    CONSTRAINT PK5 PRIMARY KEY NONCLUSTERED (ID)
+    ID         char(10)       NOT NULL,
+    NME        char(10)       NOT NULL,
+    DSP        char(10)       NULL,
+    CTY        char(10)       NULL,
+    Country    varchar(10)    NULL
 )
 
 go
@@ -183,8 +175,7 @@ go
 
 CREATE TABLE [SKL TRG_CRS](
     ID        char(10)    NOT NULL,
-    CRS_ID    char(10)    NOT NULL,
-    CONSTRAINT PK14 PRIMARY KEY NONCLUSTERED (ID, CRS_ID)
+    CRS_ID    char(10)    NOT NULL
 )
 
 go
@@ -203,8 +194,7 @@ go
 CREATE TABLE TRG_CRS(
     CRS_ID      char(10)    NOT NULL,
     TITLE       char(10)    NULL,
-    SYNOPSIS    char(10)    NULL,
-    CONSTRAINT PK8 PRIMARY KEY NONCLUSTERED (CRS_ID)
+    SYNOPSIS    char(10)    NULL
 )
 
 go
@@ -224,8 +214,7 @@ CREATE TABLE TRG_HST(
     EMP_NMB           char(10)    NOT NULL,
     CRS_ID            char(10)    NOT NULL,
     COMPLETION_DTE    char(10)    NULL,
-    RESULT            char(10)    NULL,
-    CONSTRAINT PK12 PRIMARY KEY NONCLUSTERED (EMP_NMB, CRS_ID)
+    RESULT            char(10)    NULL
 )
 
 go
