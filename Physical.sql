@@ -1,1290 +1,442 @@
 /*
  * ER/Studio Data Architect SQL Code Generation
- * Project :      Databricks.DM1
+ * Company :      IDERA
+ * Project :      Publications
+ * Author :       Product Management
  *
- * Date Created : Wednesday, January 22, 2025 15:55:17
- * Target DBMS : Databricks
+ * Date Created : Tuesday, February 25, 2025 13:54:20
+ * Target DBMS : Microsoft SQL Server 2017
  */
+
+CREATE TYPE empid FROM char(9) NULL
+go
+
+CREATE TYPE id FROM varchar(11) NULL
+go
+
+CREATE TYPE tid FROM varchar(6) NULL
+go
 
 /* 
- * TABLE: customer 
+ * TABLE: authors 
  */
 
-CREATE TABLE customer
-(
-    c_custkey       bigint,
-    c_name          string,
-    c_address       string,
-    c_nationkey     bigint,
-    c_phone         string,
-    c_acctbal       decimal(18, 2),
-    c_mktsegment    string,
-    c_comment       string
+CREATE TABLE authors(
+    au_id       id             NOT NULL
+                CONSTRAINT CK__authors__au_id__02DC7882 CHECK ((au_id like '[0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]')),
+    au_lname    varchar(40)    NOT NULL,
+    au_fname    varchar(20)    NOT NULL,
+    phone       char(12)       DEFAULT ('UNKNOWN') NOT NULL,
+    address     varchar(40)    NULL,
+    city        varchar(20)    NULL,
+    state       char(2)        NULL,
+    zip         char(5)        NULL
+                CONSTRAINT CK__authors__zip__04C4C0F4 CHECK ((zip like '[0-9][0-9][0-9][0-9][0-9]')),
+    contract    bit            NOT NULL,
+    CONSTRAINT UPKCL_auidind PRIMARY KEY CLUSTERED (au_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('authors') IS NOT NULL
+    PRINT '<<< CREATED TABLE authors >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE authors >>>'
+go
 
 /* 
- * TABLE: forecast_daily_calendar_imperial 
+ * TABLE: discounts 
  */
 
-CREATE TABLE forecast_daily_calendar_imperial
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    cloud_cover_perc_avg                   int,
-    cloud_cover_perc_max                   int,
-    cloud_cover_perc_min                   int,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_air_quality_24hr_max             double,
-    index_uv_avg                           double,
-    index_uv_max                           double,
-    index_uv_min                           double,
-    minutes_of_ice_total                   int,
-    minutes_of_precipitation_total         int,
-    minutes_of_sun_total                   int,
-    minutes_of_rain_total                  int,
-    minutes_of_snow_total                  int,
-    has_ice                                boolean,
-    ice_lwe_rate_avg                       double,
-    ice_lwe_rate_max                       double,
-    ice_lwe_rate_min                       double,
-    ice_lwe_total                          double,
-    ice_probability                        int,
-    has_precipitation                      boolean,
-    precipitation_lwe_rate_avg             double,
-    precipitation_lwe_rate_max             double,
-    precipitation_lwe_rate_min             double,
-    precipitation_lwe_total                double,
-    precipitation_probability              int,
-    precipitation_type_desc_predominant    string,
-    has_rain                               boolean,
-    rain_lwe_rate_avg                      double,
-    rain_lwe_rate_max                      double,
-    rain_lwe_rate_min                      double,
-    rain_lwe_total                         double,
-    rain_probability                       int,
-    snow_liquid_ratio_accuweather_avg      double,
-    snow_liquid_ratio_accuweather_max      double,
-    snow_liquid_ratio_accuweather_min      double,
-    has_snow                               boolean,
-    snow_avg                               double,
-    snow_max                               double,
-    snow_min                               double,
-    snow_total                             double,
-    snow_lwe_rate_avg                      double,
-    snow_lwe_rate_max                      double,
-    snow_lwe_rate_min                      double,
-    snow_lwe_total                         double,
-    snow_probability                       int,
-    solar_irradiance_avg                   double,
-    solar_irradiance_max                   double,
-    solar_irradiance_total                 double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    visibility_avg                         double,
-    visibility_max                         double,
-    visibility_min                         double,
-    wind_direction_avg                     double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_direction_avg                double,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE discounts(
+    discounttype    varchar(40)      NOT NULL,
+    stor_id         char(4)          NULL,
+    lowqty          smallint         NULL,
+    highqty         smallint         NULL,
+    discount        decimal(4, 2)    NOT NULL
 )
-;
+
+go
+
+
+IF OBJECT_ID('discounts') IS NOT NULL
+    PRINT '<<< CREATED TABLE discounts >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE discounts >>>'
+go
 
 /* 
- * TABLE: forecast_daily_calendar_metric 
+ * TABLE: employee 
  */
 
-CREATE TABLE forecast_daily_calendar_metric
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    cloud_cover_perc_avg                   int,
-    cloud_cover_perc_max                   int,
-    cloud_cover_perc_min                   int,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_air_quality_24hr_max             double,
-    index_uv_avg                           double,
-    index_uv_max                           double,
-    index_uv_min                           double,
-    minutes_of_ice_total                   int,
-    minutes_of_precipitation_total         int,
-    minutes_of_sun_total                   int,
-    minutes_of_rain_total                  int,
-    minutes_of_snow_total                  int,
-    has_ice                                boolean,
-    ice_lwe_rate_avg                       double,
-    ice_lwe_rate_max                       double,
-    ice_lwe_rate_min                       double,
-    ice_lwe_total                          double,
-    ice_probability                        int,
-    has_precipitation                      boolean,
-    precipitation_lwe_rate_avg             double,
-    precipitation_lwe_rate_max             double,
-    precipitation_lwe_rate_min             double,
-    precipitation_lwe_total                double,
-    precipitation_probability              int,
-    precipitation_type_desc_predominant    string,
-    has_rain                               boolean,
-    rain_lwe_rate_avg                      double,
-    rain_lwe_rate_max                      double,
-    rain_lwe_rate_min                      double,
-    rain_lwe_total                         double,
-    rain_probability                       int,
-    snow_liquid_ratio_accuweather_avg      double,
-    snow_liquid_ratio_accuweather_max      double,
-    snow_liquid_ratio_accuweather_min      double,
-    has_snow                               boolean,
-    snow_avg                               double,
-    snow_max                               double,
-    snow_min                               double,
-    snow_total                             double,
-    snow_lwe_rate_avg                      double,
-    snow_lwe_rate_max                      double,
-    snow_lwe_rate_min                      double,
-    snow_lwe_total                         double,
-    snow_probability                       int,
-    solar_irradiance_avg                   double,
-    solar_irradiance_max                   double,
-    solar_irradiance_total                 double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    visibility_avg                         string,
-    visibility_max                         string,
-    visibility_min                         double,
-    wind_direction_avg                     double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_direction_avg                double,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE employee(
+    emp_id       empid          NOT NULL,
+    fname        varchar(20)    NOT NULL,
+    minit        char(1)        NULL,
+    lname        varchar(30)    NOT NULL,
+    job_id       smallint       DEFAULT 1 NOT NULL,
+    job_lvl      tinyint        DEFAULT 10 NOT NULL,
+    pub_id       char(4)        DEFAULT ('9952') NOT NULL,
+    hire_date    datetime       DEFAULT (getdate()) NOT NULL,
+    CONSTRAINT PK_emp_id PRIMARY KEY NONCLUSTERED (emp_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('employee') IS NOT NULL
+    PRINT '<<< CREATED TABLE employee >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE employee >>>'
+go
 
 /* 
- * TABLE: forecast_daynight_imperial 
+ * TABLE: jobs 
  */
 
-CREATE TABLE forecast_daynight_imperial
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    day_flag                               string,
-    cloud_cover_perc_avg                   double,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_air_quality_24hr_max             double,
-    index_uv_avg                           double,
-    minutes_of_ice_total                   int,
-    minutes_of_precipitation_total         int,
-    minutes_of_sun_total                   int,
-    minutes_of_rain_total                  int,
-    minutes_of_snow_total                  int,
-    has_ice                                boolean,
-    ice_lwe_total                          double,
-    ice_probability                        int,
-    phrase_long                            string,
-    phrase_short                           string,
-    has_precipitation                      boolean,
-    precipitation_lwe_total                double,
-    precipitation_probability              int,
-    precipitation_type_desc_predominant    string,
-    has_rain                               boolean,
-    rain_lwe_total                         double,
-    rain_probability                       int,
-    snow_liquid_ratio_accuweather_avg      double,
-    has_snow                               boolean,
-    snow_total                             double,
-    snow_lwe_total                         double,
-    snow_probability                       int,
-    solar_irradiance_total                 double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    weather_icon                           int,
-    wind_direction_avg                     double,
-    wind_direction_predominant             double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_direction_avg                double,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE jobs(
+    job_id      smallint       IDENTITY(1,1),
+    job_desc    varchar(50)    DEFAULT ('New Position - title not formalized yet') NOT NULL,
+    min_lvl     tinyint        NOT NULL
+                CONSTRAINT CK__jobs__min_lvl__2625B4BF CHECK (min_lvl >= 10),
+    max_lvl     tinyint        NOT NULL
+                CONSTRAINT CK__jobs__max_lvl__2719D8F8 CHECK (max_lvl <= 250),
+    CONSTRAINT PK__jobs__job_id__243D6C4D PRIMARY KEY CLUSTERED (job_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('jobs') IS NOT NULL
+    PRINT '<<< CREATED TABLE jobs >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE jobs >>>'
+go
 
 /* 
- * TABLE: forecast_daynight_metric 
+ * TABLE: pub_info 
  */
 
-CREATE TABLE forecast_daynight_metric
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    day_flag                               string,
-    cloud_cover_perc_avg                   double,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_air_quality_24hr_max             double,
-    index_uv_avg                           double,
-    minutes_of_ice_total                   bigint,
-    minutes_of_precipitation_total         bigint,
-    minutes_of_sun_total                   bigint,
-    minutes_of_rain_total                  bigint,
-    minutes_of_snow_total                  bigint,
-    has_ice                                boolean,
-    ice_lwe_total                          double,
-    ice_probability                        bigint,
-    phrase_long                            string,
-    phrase_short                           string,
-    has_precipitation                      boolean,
-    precipitation_lwe_total                double,
-    precipitation_probability              bigint,
-    precipitation_type_desc_predominant    string,
-    has_rain                               boolean,
-    rain_lwe_total                         double,
-    rain_probability                       bigint,
-    snow_liquid_ratio_accuweather_avg      double,
-    has_snow                               boolean,
-    snow_total                             double,
-    snow_lwe_total                         double,
-    snow_probability                       bigint,
-    solar_irradiance_total                 double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    weather_icon                           bigint,
-    wind_direction_avg                     double,
-    wind_direction_predominant             double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_direction_avg                double,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE pub_info(
+    pub_id     char(4)    NOT NULL,
+    logo       image      NULL,
+    pr_info    text       NULL,
+    CONSTRAINT UPKCL_pubinfo PRIMARY KEY CLUSTERED (pub_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('pub_info') IS NOT NULL
+    PRINT '<<< CREATED TABLE pub_info >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE pub_info >>>'
+go
 
 /* 
- * TABLE: forecast_hourly_imperial 
+ * TABLE: publishers 
  */
 
-CREATE TABLE forecast_hourly_imperial
-(
-    city_name                        string,
-    country_code                     string,
-    latitude                         double,
-    longitude                        double,
-    datetime_valid_local             timestamp,
-    gmt_offset                       double,
-    cloud_base_height                int,
-    cloud_cover_perc_total           double,
-    humidity_relative                double,
-    index_uv                         double,
-    has_ice                          boolean,
-    ice_lwe                          double,
-    ice_probability                  int,
-    minutes_of_sun                   int,
-    has_precipitation                boolean,
-    precipitation_lwe                double,
-    precipitation_probability        int,
-    precipitation_type_desc          string,
-    has_rain                         boolean,
-    rain_lwe                         double,
-    rain_probability                 int,
-    snow_liquid_ratio_accuweather    double,
-    has_snow                         boolean,
-    snow                             double,
-    snow_lwe                         double,
-    snow_probability                 int,
-    solar_irradiance                 double,
-    temperature                      double,
-    temperature_dew_point            double,
-    temperature_heat_index           double,
-    temperature_realfeel             double,
-    temperature_realfeel_shade       double,
-    temperature_wind_chill           double,
-    thunderstorm_probability         int,
-    visibility                       double,
-    weather_code                     int,
-    wind_direction                   double,
-    wind_gust                        double,
-    wind_speed                       double
+CREATE TABLE publishers(
+    pub_id      char(4)        NOT NULL
+                CONSTRAINT CK__publisher__pub_i__089551D8 CHECK (pub_id = '1756' or (pub_id = '1622' or (pub_id = '0877' or (pub_id = '0736' or (pub_id = '1389')))) or (pub_id like '99[0-9][0-9]')),
+    pub_name    varchar(40)    NULL,
+    city        varchar(20)    NULL,
+    state       char(2)        NULL,
+    country     varchar(30)    DEFAULT ('USA') NULL,
+    CONSTRAINT UPKCL_pubind PRIMARY KEY CLUSTERED (pub_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('publishers') IS NOT NULL
+    PRINT '<<< CREATED TABLE publishers >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE publishers >>>'
+go
 
 /* 
- * TABLE: forecast_hourly_metric 
+ * TABLE: roysched 
  */
 
-CREATE TABLE forecast_hourly_metric
-(
-    city_name                        string,
-    country_code                     string,
-    latitude                         double,
-    longitude                        double,
-    datetime_valid_local             timestamp,
-    gmt_offset                       double,
-    cloud_base_height                int,
-    cloud_cover_perc_total           double,
-    humidity_relative                double,
-    index_uv                         double,
-    has_ice                          boolean,
-    ice_lwe                          double,
-    ice_probability                  int,
-    minutes_of_sun                   int,
-    has_precipitation                boolean,
-    precipitation_lwe                double,
-    precipitation_probability        int,
-    precipitation_type_desc          string,
-    has_rain                         boolean,
-    rain_lwe                         double,
-    rain_probability                 int,
-    snow_liquid_ratio_accuweather    double,
-    has_snow                         boolean,
-    snow                             double,
-    snow_lwe                         double,
-    snow_probability                 int,
-    solar_irradiance                 double,
-    temperature                      double,
-    temperature_dew_point            double,
-    temperature_heat_index           double,
-    temperature_realfeel             double,
-    temperature_realfeel_shade       double,
-    temperature_wind_chill           double,
-    thunderstorm_probability         int,
-    visibility                       double,
-    weather_code                     int,
-    wind_direction                   double,
-    wind_gust                        double,
-    wind_speed                       double
+CREATE TABLE roysched(
+    title_id    tid    NOT NULL,
+    lorange     int    NULL,
+    hirange     int    NULL,
+    royalty     int    NULL
 )
-;
+
+go
+
+
+IF OBJECT_ID('roysched') IS NOT NULL
+    PRINT '<<< CREATED TABLE roysched >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE roysched >>>'
+go
 
 /* 
- * TABLE: historical_daily_calendar_imperial 
+ * TABLE: sales 
  */
 
-CREATE TABLE historical_daily_calendar_imperial
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    cloud_base_height_avg                  bigint,
-    cloud_base_height_max                  bigint,
-    cloud_base_height_min                  bigint,
-    cloud_cover_avg                        double,
-    cloud_cover_max                        double,
-    cloud_cover_min                        double,
-    cloud_cover_perc_avg                   bigint,
-    cloud_cover_perc_max                   bigint,
-    cloud_cover_perc_min                   bigint,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_uv_avg                           double,
-    index_uv_max                           double,
-    index_uv_min                           double,
-    minutes_of_ice_total                   string,
-    minutes_of_precipitation_total         bigint,
-    minutes_of_sun_total                   bigint,
-    minutes_of_rain_total                  string,
-    minutes_of_snow_total                  bigint,
-    has_ice                                string,
-    ice_lwe_rate_avg                       string,
-    ice_lwe_rate_max                       string,
-    ice_lwe_rate_min                       string,
-    ice_lwe_total                          string,
-    has_precipitation                      boolean,
-    precipitation_lwe_rate_avg             double,
-    precipitation_lwe_rate_max             double,
-    precipitation_lwe_rate_min             double,
-    precipitation_lwe_total                double,
-    precipitation_type_desc_predominant    string,
-    precipitation_type_predominant         bigint,
-    pressure_avg                           double,
-    pressure_max                           double,
-    pressure_min                           double,
-    pressure_msl_avg                       double,
-    pressure_msl_max                       double,
-    pressure_msl_min                       double,
-    has_rain                               string,
-    rain_lwe_rate_avg                      string,
-    rain_lwe_rate_max                      string,
-    rain_lwe_rate_min                      string,
-    rain_lwe_total                         string,
-    snow_cover_avg                         string,
-    snow_cover_max                         string,
-    snow_cover_min                         string,
-    snow_depth_avg                         string,
-    snow_depth_max                         string,
-    snow_depth_min                         string,
-    snow_liquid_ratio_accuweather_avg      double,
-    snow_liquid_ratio_accuweather_max      double,
-    snow_liquid_ratio_accuweather_min      double,
-    has_snow                               boolean,
-    snow_avg                               string,
-    snow_max                               string,
-    snow_min                               string,
-    snow_total                             string,
-    snow_lwe_rate_avg                      double,
-    snow_lwe_rate_max                      double,
-    snow_lwe_rate_min                      double,
-    snow_lwe_total                         double,
-    solar_irradiance_avg                   double,
-    solar_irradiance_max                   double,
-    solar_irradiance_total                 double,
-    solar_radiation_net_avg                double,
-    solar_radiation_net_max                double,
-    solar_radiation_net_total              double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    visibility_avg                         double,
-    visibility_max                         double,
-    visibility_min                         double,
-    wind_direction_avg                     double,
-    wind_direction_predominant             double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_instantaneous_avg            string,
-    wind_gust_instantaneous_max            string,
-    wind_gust_instantaneous_min            string,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE sales(
+    stor_id     char(4)        NOT NULL,
+    ord_num     varchar(20)    NOT NULL,
+    title_id    tid            NOT NULL,
+    ord_date    datetime       NOT NULL,
+    qty         smallint       NOT NULL,
+    payterms    varchar(12)    NOT NULL,
+    CONSTRAINT UPKCL_sales PRIMARY KEY CLUSTERED (stor_id, ord_num, title_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('sales') IS NOT NULL
+    PRINT '<<< CREATED TABLE sales >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE sales >>>'
+go
 
 /* 
- * TABLE: historical_daily_calendar_metric 
+ * TABLE: stores 
  */
 
-CREATE TABLE historical_daily_calendar_metric
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    cloud_base_height_avg                  int,
-    cloud_base_height_max                  int,
-    cloud_base_height_min                  int,
-    cloud_cover_avg                        double,
-    cloud_cover_max                        double,
-    cloud_cover_min                        double,
-    cloud_cover_perc_avg                   int,
-    cloud_cover_perc_max                   int,
-    cloud_cover_perc_min                   int,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_uv_avg                           double,
-    index_uv_max                           double,
-    index_uv_min                           double,
-    minutes_of_ice_total                   string,
-    minutes_of_precipitation_total         int,
-    minutes_of_sun_total                   int,
-    minutes_of_rain_total                  string,
-    minutes_of_snow_total                  int,
-    has_ice                                string,
-    ice_lwe_rate_avg                       string,
-    ice_lwe_rate_max                       string,
-    ice_lwe_rate_min                       string,
-    ice_lwe_total                          string,
-    has_precipitation                      boolean,
-    precipitation_lwe_rate_avg             double,
-    precipitation_lwe_rate_max             double,
-    precipitation_lwe_rate_min             double,
-    precipitation_lwe_total                double,
-    precipitation_type_desc_predominant    string,
-    precipitation_type_predominant         int,
-    pressure_avg                           double,
-    pressure_max                           double,
-    pressure_min                           double,
-    pressure_msl_avg                       double,
-    pressure_msl_max                       double,
-    pressure_msl_min                       double,
-    has_rain                               string,
-    rain_lwe_rate_avg                      string,
-    rain_lwe_rate_max                      string,
-    rain_lwe_rate_min                      string,
-    rain_lwe_total                         string,
-    snow_cover_avg                         string,
-    snow_cover_max                         string,
-    snow_cover_min                         string,
-    snow_depth_avg                         string,
-    snow_depth_max                         string,
-    snow_depth_min                         string,
-    snow_liquid_ratio_accuweather_avg      double,
-    snow_liquid_ratio_accuweather_max      double,
-    snow_liquid_ratio_accuweather_min      double,
-    has_snow                               boolean,
-    snow_avg                               string,
-    snow_max                               string,
-    snow_min                               string,
-    snow_total                             string,
-    snow_lwe_rate_avg                      double,
-    snow_lwe_rate_max                      double,
-    snow_lwe_rate_min                      double,
-    snow_lwe_total                         double,
-    solar_irradiance_avg                   double,
-    solar_irradiance_max                   double,
-    solar_irradiance_total                 double,
-    solar_radiation_net_avg                double,
-    solar_radiation_net_max                double,
-    solar_radiation_net_total              double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    visibility_avg                         double,
-    visibility_max                         double,
-    visibility_min                         double,
-    wind_direction_avg                     double,
-    wind_direction_predominant             double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_instantaneous_avg            string,
-    wind_gust_instantaneous_max            string,
-    wind_gust_instantaneous_min            string,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE stores(
+    stor_id         char(4)        NOT NULL,
+    stor_name       varchar(40)    NULL,
+    stor_address    varchar(40)    NULL,
+    city            varchar(20)    NULL,
+    state           char(2)        NULL,
+    zip             char(5)        NULL,
+    CONSTRAINT UPK_storeid PRIMARY KEY CLUSTERED (stor_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('stores') IS NOT NULL
+    PRINT '<<< CREATED TABLE stores >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE stores >>>'
+go
 
 /* 
- * TABLE: historical_daynight_imperial 
+ * TABLE: titleauthor 
  */
 
-CREATE TABLE historical_daynight_imperial
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    day_flag                               string,
-    cloud_base_height_avg                  int,
-    cloud_base_height_max                  int,
-    cloud_base_height_min                  int,
-    cloud_cover_avg                        double,
-    cloud_cover_max                        double,
-    cloud_cover_min                        double,
-    cloud_cover_perc_avg                   int,
-    cloud_cover_perc_max                   int,
-    cloud_cover_perc_min                   int,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_uv_avg                           double,
-    index_uv_max                           double,
-    index_uv_min                           double,
-    minutes_of_ice_total                   string,
-    minutes_of_precipitation_total         int,
-    minutes_of_sun_total                   int,
-    minutes_of_rain_total                  string,
-    minutes_of_snow_total                  int,
-    has_ice                                string,
-    ice_lwe_rate_avg                       string,
-    ice_lwe_rate_max                       string,
-    ice_lwe_rate_min                       string,
-    ice_lwe_total                          string,
-    has_precipitation                      boolean,
-    precipitation_lwe_rate_avg             double,
-    precipitation_lwe_rate_max             double,
-    precipitation_lwe_rate_min             double,
-    precipitation_lwe_total                double,
-    precipitation_type_desc_predominant    string,
-    precipitation_type_predominant         int,
-    pressure_avg                           double,
-    pressure_max                           double,
-    pressure_min                           double,
-    pressure_msl_avg                       double,
-    pressure_msl_max                       double,
-    pressure_msl_min                       double,
-    has_rain                               string,
-    rain_lwe_rate_avg                      string,
-    rain_lwe_rate_max                      string,
-    rain_lwe_rate_min                      string,
-    rain_lwe_total                         string,
-    snow_cover_avg                         string,
-    snow_cover_max                         string,
-    snow_cover_min                         string,
-    snow_depth_avg                         string,
-    snow_depth_max                         string,
-    snow_depth_min                         string,
-    snow_liquid_ratio_accuweather_avg      double,
-    snow_liquid_ratio_accuweather_max      double,
-    snow_liquid_ratio_accuweather_min      double,
-    has_snow                               boolean,
-    snow_avg                               string,
-    snow_max                               string,
-    snow_min                               string,
-    snow_total                             string,
-    snow_lwe_rate_avg                      double,
-    snow_lwe_rate_max                      double,
-    snow_lwe_rate_min                      double,
-    snow_lwe_total                         double,
-    solar_irradiance_avg                   double,
-    solar_irradiance_max                   double,
-    solar_irradiance_total                 double,
-    solar_radiation_net_avg                double,
-    solar_radiation_net_max                double,
-    solar_radiation_net_total              double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    visibility_avg                         double,
-    visibility_max                         double,
-    visibility_min                         double,
-    wind_direction_avg                     double,
-    wind_direction_predominant             double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_instantaneous_avg            string,
-    wind_gust_instantaneous_max            string,
-    wind_gust_instantaneous_min            string,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE titleauthor(
+    au_id         id         NOT NULL,
+    title_id      tid        NOT NULL,
+    au_ord        tinyint    NULL,
+    royaltyper    int        NULL,
+    CONSTRAINT UPKCL_taind PRIMARY KEY CLUSTERED (au_id, title_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('titleauthor') IS NOT NULL
+    PRINT '<<< CREATED TABLE titleauthor >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE titleauthor >>>'
+go
 
 /* 
- * TABLE: historical_daynight_metric 
+ * TABLE: titles 
  */
 
-CREATE TABLE historical_daynight_metric
-(
-    city_name                              string,
-    country_code                           string,
-    latitude                               double,
-    longitude                              double,
-    date                                   date,
-    day_flag                               string,
-    cloud_base_height_avg                  int,
-    cloud_base_height_max                  int,
-    cloud_base_height_min                  int,
-    cloud_cover_avg                        double,
-    cloud_cover_max                        double,
-    cloud_cover_min                        double,
-    cloud_cover_perc_avg                   int,
-    cloud_cover_perc_max                   int,
-    cloud_cover_perc_min                   int,
-    degree_days_cooling                    double,
-    degree_days_freezing                   double,
-    degree_days_growing                    double,
-    degree_days_heating                    double,
-    humidity_relative_avg                  double,
-    humidity_relative_max                  double,
-    humidity_relative_min                  double,
-    index_uv_avg                           double,
-    index_uv_max                           double,
-    index_uv_min                           double,
-    minutes_of_ice_total                   string,
-    minutes_of_precipitation_total         int,
-    minutes_of_sun_total                   int,
-    minutes_of_rain_total                  string,
-    minutes_of_snow_total                  int,
-    has_ice                                string,
-    ice_lwe_rate_avg                       string,
-    ice_lwe_rate_max                       string,
-    ice_lwe_rate_min                       string,
-    ice_lwe_total                          string,
-    has_precipitation                      boolean,
-    precipitation_lwe_rate_avg             double,
-    precipitation_lwe_rate_max             double,
-    precipitation_lwe_rate_min             double,
-    precipitation_lwe_total                double,
-    precipitation_type_desc_predominant    string,
-    precipitation_type_predominant         int,
-    pressure_avg                           double,
-    pressure_max                           double,
-    pressure_min                           double,
-    pressure_msl_avg                       double,
-    pressure_msl_max                       double,
-    pressure_msl_min                       double,
-    has_rain                               string,
-    rain_lwe_rate_avg                      string,
-    rain_lwe_rate_max                      string,
-    rain_lwe_rate_min                      string,
-    rain_lwe_total                         string,
-    snow_cover_avg                         string,
-    snow_cover_max                         string,
-    snow_cover_min                         string,
-    snow_depth_avg                         string,
-    snow_depth_max                         string,
-    snow_depth_min                         string,
-    snow_liquid_ratio_accuweather_avg      double,
-    snow_liquid_ratio_accuweather_max      double,
-    snow_liquid_ratio_accuweather_min      double,
-    has_snow                               boolean,
-    snow_avg                               string,
-    snow_max                               string,
-    snow_min                               string,
-    snow_total                             string,
-    snow_lwe_rate_avg                      double,
-    snow_lwe_rate_max                      double,
-    snow_lwe_rate_min                      double,
-    snow_lwe_total                         double,
-    solar_irradiance_avg                   double,
-    solar_irradiance_max                   double,
-    solar_irradiance_total                 double,
-    solar_radiation_net_avg                double,
-    solar_radiation_net_max                double,
-    solar_radiation_net_total              double,
-    temperature_avg                        double,
-    temperature_max                        double,
-    temperature_min                        double,
-    temperature_dew_point_avg              double,
-    temperature_dew_point_max              double,
-    temperature_dew_point_min              double,
-    temperature_heat_index_avg             double,
-    temperature_heat_index_max             double,
-    temperature_heat_index_min             double,
-    temperature_realfeel_avg               double,
-    temperature_realfeel_max               double,
-    temperature_realfeel_min               double,
-    temperature_realfeel_shade_avg         double,
-    temperature_realfeel_shade_max         double,
-    temperature_realfeel_shade_min         double,
-    temperature_wind_chill_avg             double,
-    temperature_wind_chill_max             double,
-    temperature_wind_chill_min             double,
-    visibility_avg                         double,
-    visibility_max                         double,
-    visibility_min                         double,
-    wind_direction_avg                     double,
-    wind_direction_predominant             double,
-    wind_gust_avg                          double,
-    wind_gust_max                          double,
-    wind_gust_min                          double,
-    wind_gust_instantaneous_avg            string,
-    wind_gust_instantaneous_max            string,
-    wind_gust_instantaneous_min            string,
-    wind_speed_avg                         double,
-    wind_speed_max                         double,
-    wind_speed_min                         double
+CREATE TABLE titles(
+    title_id     tid             NOT NULL,
+    title        varchar(80)     NOT NULL,
+    type         char(12)        DEFAULT ('UNDECIDED') NOT NULL,
+    pub_id       char(4)         NULL,
+    price        money           NULL,
+    advance      money           NULL,
+    royalty      int             NULL,
+    ytd_sales    int             NULL,
+    notes        varchar(200)    NULL,
+    pubdate      datetime        DEFAULT (getdate()) NOT NULL,
+    CONSTRAINT UPKCL_titleidind PRIMARY KEY CLUSTERED (title_id)
 )
-;
+
+go
+
+
+IF OBJECT_ID('titles') IS NOT NULL
+    PRINT '<<< CREATED TABLE titles >>>'
+ELSE
+    PRINT '<<< FAILED CREATING TABLE titles >>>'
+go
 
 /* 
- * TABLE: historical_hourly_imperial 
+ * INDEX: aunmind 
  */
 
-CREATE TABLE historical_hourly_imperial
-(
-    city_name                     string,
-    country_code                  string,
-    latitude                      double,
-    longitude                     double,
-    date                          timestamp,
-    cloud_base_height             int,
-    cloud_cover_high              string,
-    cloud_cover_low               string,
-    cloud_cover_medium            string,
-    cloud_cover_total             double,
-    humidity_relative             double,
-    index_uv                      double,
-    has_ice                       string,
-    ice_lwe                       string,
-    ice_lwe_rate                  string,
-    minutes_of_ice                string,
-    minutes_of_precipitation      int,
-    minutes_of_sun                int,
-    minutes_of_rain               string,
-    minutes_of_snow               int,
-    has_precipitation             boolean,
-    precipitation_lwe             double,
-    precipitation_lwe_rate        double,
-    precipitation_type            int,
-    precipitation_type_desc       string,
-    pressure                      double,
-    pressure_msl                  double,
-    has_rain                      string,
-    rain_lwe                      string,
-    rain_lwe_rate                 string,
-    snow_cover                    string,
-    snow_depth                    string,
-    has_snow                      boolean,
-    snow                          string,
-    snow_lwe                      double,
-    snow_lwe_rate                 double,
-    solar_irradiance              double,
-    solar_radiation_net           double,
-    temperature                   double,
-    temperature_dew_point         double,
-    temperature_heat_index        double,
-    temperature_realfeel          double,
-    temperature_realfeel_shade    double,
-    temperature_wind_chill        double,
-    visibility                    double,
-    wind_direction                double,
-    wind_gust                     double,
-    wind_gust_instantaneous       string,
-    wind_speed                    double
-)
-;
+CREATE INDEX aunmind ON authors(au_lname, au_fname)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('authors') AND name='aunmind')
+    PRINT '<<< CREATED INDEX authors.aunmind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX authors.aunmind >>>'
+go
 
 /* 
- * TABLE: historical_hourly_metric 
+ * INDEX: employee_ind 
  */
 
-CREATE TABLE historical_hourly_metric
-(
-    city_name                     string,
-    country_code                  string,
-    latitude                      double,
-    longitude                     double,
-    datetime_valid_local          timestamp,
-    gmt_offset                    double,
-    cloud_base_height             int,
-    cloud_cover_high              string,
-    cloud_cover_low               string,
-    cloud_cover_medium            string,
-    cloud_cover_total             double,
-    humidity_relative             double,
-    index_uv                      double,
-    has_ice                       string,
-    ice_lwe                       string,
-    ice_lwe_rate                  string,
-    minutes_of_ice                string,
-    minutes_of_precipitation      int,
-    minutes_of_sun                int,
-    minutes_of_rain               string,
-    minutes_of_snow               int,
-    has_precipitation             boolean,
-    precipitation_lwe             double,
-    precipitation_lwe_rate        double,
-    precipitation_type            int,
-    precipitation_type_desc       string,
-    pressure                      double,
-    pressure_msl                  double,
-    has_rain                      string,
-    rain_lwe                      string,
-    rain_lwe_rate                 string,
-    snow_cover                    string,
-    snow_depth                    string,
-    has_snow                      boolean,
-    snow                          string,
-    snow_lwe                      double,
-    snow_lwe_rate                 double,
-    solar_irradiance              double,
-    solar_radiation_net           double,
-    temperature                   double,
-    temperature_dew_point         double,
-    temperature_heat_index        double,
-    temperature_realfeel          double,
-    temperature_realfeel_shade    double,
-    temperature_wind_chill        double,
-    visibility                    double,
-    wind_direction                double,
-    wind_gust                     double,
-    wind_gust_instantaneous       string,
-    wind_speed                    double
-)
-;
+CREATE CLUSTERED INDEX employee_ind ON employee(lname, fname, minit)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('employee') AND name='employee_ind')
+    PRINT '<<< CREATED INDEX employee.employee_ind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX employee.employee_ind >>>'
+go
 
 /* 
- * TABLE: lineitem 
+ * INDEX: titleidind 
  */
 
-CREATE TABLE lineitem
-(
-    l_orderkey         bigint,
-    l_partkey          bigint,
-    l_suppkey          bigint,
-    l_linenumber       int,
-    l_quantity         decimal(18, 2),
-    l_extendedprice    decimal(18, 2),
-    l_discount         decimal(18, 2),
-    l_tax              decimal(18, 2),
-    l_returnflag       string,
-    l_linestatus       string,
-    l_shipdate         date,
-    l_commitdate       date,
-    l_receiptdate      date,
-    l_shipinstruct     string,
-    l_shipmode         string,
-    l_comment          string
-)
-;
+CREATE INDEX titleidind ON roysched(title_id)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('roysched') AND name='titleidind')
+    PRINT '<<< CREATED INDEX roysched.titleidind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX roysched.titleidind >>>'
+go
 
 /* 
- * TABLE: media_customer_reviews 
+ * INDEX: titleidind 
  */
 
-CREATE TABLE media_customer_reviews
-(
-    review         string,
-    franchiseID    bigint,
-    review_date    timestamp,
-    new_id         int
-)
-;
+CREATE INDEX titleidind ON sales(title_id)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('sales') AND name='titleidind')
+    PRINT '<<< CREATED INDEX sales.titleidind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX sales.titleidind >>>'
+go
 
 /* 
- * TABLE: media_gold_reviews_chunked 
+ * INDEX: auidind 
  */
 
-CREATE TABLE media_gold_reviews_chunked
-(
-    franchiseID     int,
-    review_date     timestamp,
-    chunked_text    string,
-    chunk_id        string,
-    review_uri      string
-)
-;
+CREATE INDEX auidind ON titleauthor(au_id)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('titleauthor') AND name='auidind')
+    PRINT '<<< CREATED INDEX titleauthor.auidind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX titleauthor.auidind >>>'
+go
 
 /* 
- * TABLE: nation 
+ * INDEX: titleidind 
  */
 
-CREATE TABLE nation
-(
-    n_nationkey    bigint,
-    n_name         string,
-    n_regionkey    bigint,
-    n_comment      string
-)
-;
+CREATE INDEX titleidind ON titleauthor(title_id)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('titleauthor') AND name='titleidind')
+    PRINT '<<< CREATED INDEX titleauthor.titleidind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX titleauthor.titleidind >>>'
+go
 
 /* 
- * TABLE: orders 
+ * INDEX: titleind 
  */
 
-CREATE TABLE orders
-(
-    o_orderkey         bigint,
-    o_custkey          bigint,
-    o_orderstatus      string,
-    o_totalprice       decimal(18, 2),
-    o_orderdate        date,
-    o_orderpriority    string,
-    o_clerk            string,
-    o_shippriority     int,
-    o_comment          string
-)
-;
+CREATE INDEX titleind ON titles(title)
+go
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id=OBJECT_ID('titles') AND name='titleind')
+    PRINT '<<< CREATED INDEX titles.titleind >>>'
+ELSE
+    PRINT '<<< FAILED CREATING INDEX titles.titleind >>>'
+go
 
 /* 
- * TABLE: part 
+ * TABLE: discounts 
  */
 
-CREATE TABLE part
-(
-    p_partkey        bigint,
-    p_name           string,
-    p_mfgr           string,
-    p_brand          string,
-    p_type           string,
-    p_size           int,
-    p_container      string,
-    p_retailprice    decimal(18, 2),
-    p_comment        string
-)
-;
+ALTER TABLE discounts ADD CONSTRAINT FK__discounts__stor___2160FFA2 
+    FOREIGN KEY (stor_id)
+    REFERENCES stores(stor_id)
+go
+
 
 /* 
- * TABLE: partsupp 
+ * TABLE: employee 
  */
 
-CREATE TABLE partsupp
-(
-    ps_partkey       bigint,
-    ps_suppkey       bigint,
-    ps_availqty      int,
-    ps_supplycost    decimal(18, 2),
-    ps_comment       string
-)
-;
+ALTER TABLE employee ADD CONSTRAINT FK__employee__job_id__30A34332 
+    FOREIGN KEY (job_id)
+    REFERENCES jobs(job_id)
+go
+
+ALTER TABLE employee ADD CONSTRAINT FK__employee__pub_id__337FAFDD 
+    FOREIGN KEY (pub_id)
+    REFERENCES publishers(pub_id)
+go
+
 
 /* 
- * TABLE: region 
+ * TABLE: pub_info 
  */
 
-CREATE TABLE region
-(
-    r_regionkey    bigint,
-    r_name         string,
-    r_comment      string
-)
-;
+ALTER TABLE pub_info ADD CONSTRAINT FK__pub_info__pub_id__2AEA69DC 
+    FOREIGN KEY (pub_id)
+    REFERENCES publishers(pub_id)
+go
+
 
 /* 
- * TABLE: sales_customers 
+ * TABLE: roysched 
  */
 
-CREATE TABLE sales_customers
-(
-    customerID         bigint,
-    first_name         string,
-    last_name          string,
-    email_address      string,
-    phone_number       string,
-    address            string,
-    city               string,
-    state              string,
-    country            string,
-    continent          string,
-    postal_zip_code    bigint,
-    gender             string
-)
-;
+ALTER TABLE roysched ADD CONSTRAINT FK__roysched__title___1E8492F7 
+    FOREIGN KEY (title_id)
+    REFERENCES titles(title_id)
+go
+
 
 /* 
- * TABLE: sales_franchises 
+ * TABLE: sales 
  */
 
-CREATE TABLE sales_franchises
-(
-    franchiseID    bigint,
-    name           string,
-    city           string,
-    district       string,
-    zipcode        string,
-    country        string,
-    size           string,
-    longitude      double,
-    latitude       double,
-    supplierID     bigint
-)
-;
+ALTER TABLE sales ADD CONSTRAINT FK__sales__stor_id__1AB40213 
+    FOREIGN KEY (stor_id)
+    REFERENCES stores(stor_id)
+go
+
+ALTER TABLE sales ADD CONSTRAINT FK__sales__title_id__1BA8264C 
+    FOREIGN KEY (title_id)
+    REFERENCES titles(title_id)
+go
+
 
 /* 
- * TABLE: sales_suppliers 
+ * TABLE: titleauthor 
  */
 
-CREATE TABLE sales_suppliers
-(
-    supplierID    bigint,
-    name          string,
-    ingredient    string,
-    continent     string,
-    city          string,
-    district      string,
-    size          string,
-    longitude     double,
-    latitude      double,
-    approved      string
-)
-;
+ALTER TABLE titleauthor ADD CONSTRAINT FK__titleauth__au_id__1312E04B 
+    FOREIGN KEY (au_id)
+    REFERENCES authors(au_id)
+go
+
+ALTER TABLE titleauthor ADD CONSTRAINT FK__titleauth__title__14070484 
+    FOREIGN KEY (title_id)
+    REFERENCES titles(title_id)
+go
+
 
 /* 
- * TABLE: sales_transactions 
+ * TABLE: titles 
  */
 
-CREATE TABLE sales_transactions
-(
-    transactionID    bigint,
-    customerID       bigint,
-    franchiseID      bigint,
-    dateTime         timestamp,
-    product          string,
-    quantity         bigint,
-    unitPrice        bigint,
-    totalPrice       bigint,
-    paymentMethod    string,
-    cardNumber       bigint
-)
-;
+ALTER TABLE titles ADD CONSTRAINT FK__titles__pub_id__0E4E2B2E 
+    FOREIGN KEY (pub_id)
+    REFERENCES publishers(pub_id)
+go
 
-/* 
- * TABLE: supplier 
- */
-
-CREATE TABLE supplier
-(
-    s_suppkey      bigint,
-    s_name         string,
-    s_address      string,
-    s_nationkey    bigint,
-    s_phone        string,
-    s_acctbal      decimal(18, 2),
-    s_comment      string
-)
-;
-
-/* 
- * TABLE: trips 
- */
-
-CREATE TABLE trips
-(
-    tpep_pickup_datetime     timestamp,
-    tpep_dropoff_datetime    timestamp,
-    trip_distance            double,
-    fare_amount              double,
-    pickup_zip               int,
-    dropoff_zip              int
-)
-;
 
