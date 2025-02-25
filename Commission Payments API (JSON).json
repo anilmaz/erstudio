@@ -1,0 +1,72 @@
+{
+	"Employee" : [
+    {
+        "EmployeeNumber" : "",
+        "EmployeeType" : "",
+        "StartDate" : "",
+        "PhoneNumber" : 0,
+        "FirstName" : "",
+        "Surname" : "",
+        "Member" : "",
+        "Manager" : "",
+        "AddressId" : 0,
+        "CommissionPayment" : [ 
+        {
+            "CommissionPaymentValue" : 0,
+            "Paid" : false,
+            "PaymentDate" : "",
+            "Order" : [ 
+            {
+                "Employee" : 
+                {
+                    "EmployeeNumber" : "",
+                    "EmployeeType" : "",
+                    "StartDate" : "",
+                    "PhoneNumber" : 0,
+                    "FirstName" : "",
+                    "Surname" : "",
+                    "Member" : "",
+                    "Manager" : "",
+                    "AddressId" : 0,
+                    "CommissionPayment" : [ 
+                    {
+                        "CommissionPaymentValue" : 0,
+                        "Paid" : false,
+                        "PaymentDate" : "",
+                        "Order" : [ 
+                        {
+                            "Employee" : 
+                            {
+                                "EmployeeNumber" : "",
+                                "EmployeeType" : "",
+                                "StartDate" : "",
+                                "PhoneNumber" : 0,
+                                "FirstName" : "",
+                                "Surname" : "",
+                                "Member" : "",
+                                "Manager" : "",
+                                "AddressId" : 0,
+                                "CommissionPayment" : [ 
+                                {
+                                    "CommissionPaymentValue" : 0,
+                                    "Paid" : false,
+                                    "PaymentDate" : "",
+                                    "Order" : [ 
+                                    { ]
+                                } ]
+                            },
+                            "OrderNumber" : "",
+                            "OrderDate" : "",
+                            "CustomerPurchaseOrderNumber" : "",
+                            "CustomerReferenceNumber" : ""
+                        } ]
+                    } ]
+                },
+                "OrderNumber" : "",
+                "OrderDate" : "",
+                "CustomerPurchaseOrderNumber" : "",
+                "CustomerReferenceNumber" : ""
+            } ]
+        } ]
+    }]
+}
