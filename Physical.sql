@@ -2,7 +2,7 @@
  * ER/Studio Data Architect SQL Code Generation
  * Project :      GitDemo.DM1
  *
- * Date Created : Thursday, March 20, 2025 10:16:06
+ * Date Created : Thursday, March 20, 2025 10:19:23
  * Target DBMS : Microsoft SQL Server 2022
  */
 
@@ -17,6 +17,7 @@ CREATE TABLE ADR(
     CTY         char(10)    NULL,
     PST_CDE     char(10)    NULL,
     CTY_1       char(10)    NULL,
+    COUNTRY     char(10)    NULL,
     CONSTRAINT PK4 PRIMARY KEY NONCLUSTERED (ADR_ID)
 )
 
