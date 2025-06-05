@@ -1,0 +1,6 @@
+
+-- Standard Alter Table SQL
+
+ALTER TABLE dbo.CLASSACTIONS DROP COLUMN COUNTY
+go
+
