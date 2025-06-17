@@ -1,246 +1,219 @@
 /*
  * ER/Studio Data Architect SQL Code Generation
- * Project :      GitDemo.DM1
+ * Project :      DATA MODEL
  *
- * Date Created : Thursday, March 20, 2025 10:19:23
+ * Date Created : Tuesday, June 17, 2025 08:34:19
  * Target DBMS : Microsoft SQL Server 2022
  */
 
 /* 
- * TABLE: ADR 
+ * TABLE: Books 
  */
 
-CREATE TABLE ADR(
-    ADR_ID      char(10)    NOT NULL,
-    ADR_LN_1    char(10)    NULL,
-    ADR_LN_2    char(10)    NULL,
-    CTY         char(10)    NULL,
-    PST_CDE     char(10)    NULL,
-    CTY_1       char(10)    NULL,
-    COUNTRY     char(10)    NULL,
-    CONSTRAINT PK4 PRIMARY KEY NONCLUSTERED (ADR_ID)
+CREATE TABLE Books(
+    BookID       int              NOT NULL,
+    Title        nvarchar(100)    NULL,
+    Author       nvarchar(100)    NULL,
+    ISBN         nvarchar(20)     NULL,
+    LibraryID    int              NULL,
+    CONSTRAINT PK__Books__3DE0C227A4029391 PRIMARY KEY CLUSTERED (BookID)
 )
 
 go
 
 
-IF OBJECT_ID('ADR') IS NOT NULL
-    PRINT '<<< CREATED TABLE ADR >>>'
+IF OBJECT_ID('Books') IS NOT NULL
+    PRINT '<<< CREATED TABLE Books >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE ADR >>>'
+    PRINT '<<< FAILED CREATING TABLE Books >>>'
 go
 
 /* 
- * TABLE: AGY 
+ * TABLE: Classrooms 
  */
 
-CREATE TABLE AGY(
-    ID          char(10)    NOT NULL,
-    AGY_NME     char(10)    NULL,
-    MAIN_CCT    char(10)    NULL,
-    CONTRACT    char(10)    NULL,
-    CONSTRAINT PK9 PRIMARY KEY NONCLUSTERED (ID)
+CREATE TABLE Classrooms(
+    ClassroomID    int              NOT NULL,
+    Building       nvarchar(100)    NULL,
+    RoomNumber     nvarchar(10)     NULL,
+    CONSTRAINT PK__Classroo__11618E8A07E47B30 PRIMARY KEY CLUSTERED (ClassroomID)
 )
 
 go
 
 
-IF OBJECT_ID('AGY') IS NOT NULL
-    PRINT '<<< CREATED TABLE AGY >>>'
+IF OBJECT_ID('Classrooms') IS NOT NULL
+    PRINT '<<< CREATED TABLE Classrooms >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE AGY >>>'
+    PRINT '<<< FAILED CREATING TABLE Classrooms >>>'
 go
 
 /* 
- * TABLE: CNR 
+ * TABLE: Courses 
  */
 
-CREATE TABLE CNR(
-    EMP_NMB     char(10)    NOT NULL,
-    DAY_RAT     char(10)    NULL,
-    AGENCYID    char(10)    NOT NULL,
-    CONSTRAINT PK3 PRIMARY KEY NONCLUSTERED (EMP_NMB)
+CREATE TABLE Courses(
+    CourseID      int              NOT NULL,
+    CourseName    nvarchar(100)    NULL,
+    Credits       int              NULL,
+    CONSTRAINT PK__Courses__C92D718724C49B1F PRIMARY KEY CLUSTERED (CourseID)
 )
 
 go
 
 
-IF OBJECT_ID('CNR') IS NOT NULL
-    PRINT '<<< CREATED TABLE CNR >>>'
+IF OBJECT_ID('Courses') IS NOT NULL
+    PRINT '<<< CREATED TABLE Courses >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE CNR >>>'
+    PRINT '<<< FAILED CREATING TABLE Courses >>>'
 go
 
 /* 
- * TABLE: DEP 
+ * TABLE: CourseSchedules 
  */
 
-CREATE TABLE DEP(
-    ID     char(10)    NOT NULL,
-    NME    char(10)    NULL,
-    CONSTRAINT PK7 PRIMARY KEY NONCLUSTERED (ID)
+CREATE TABLE CourseSchedules(
+    ScheduleID      int         NOT NULL,
+    CourseID        int         NULL,
+    InstructorID    int         NULL,
+    ClassroomID     int         NULL,
+    ScheduleTime    datetime    NULL,
+    CONSTRAINT PK__CourseSc__9C8A5B69466F8F71 PRIMARY KEY CLUSTERED (ScheduleID)
 )
 
 go
 
 
-IF OBJECT_ID('DEP') IS NOT NULL
-    PRINT '<<< CREATED TABLE DEP >>>'
+IF OBJECT_ID('CourseSchedules') IS NOT NULL
+    PRINT '<<< CREATED TABLE CourseSchedules >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE DEP >>>'
+    PRINT '<<< FAILED CREATING TABLE CourseSchedules >>>'
 go
 
 /* 
- * TABLE: EMP 
+ * TABLE: Departments 
  */
 
-CREATE TABLE EMP(
-    EMP_NMB      char(10)          NOT NULL,
-    EMP_TYP      char(1)           NOT NULL,
-    STT_DTE      date              NULL,
-    PHONE_NMB    numeric(15, 0)    NULL,
-    FRS_NME      char(10)          NOT NULL,
-    SURNAME      char(10)          NOT NULL,
-    MEMBER       char(10)          NOT NULL,
-    MANAGER      char(10)          NULL,
-    ADR_ID       char(10)          NOT NULL,
-    CONSTRAINT PK1 PRIMARY KEY NONCLUSTERED (EMP_NMB)
+CREATE TABLE Departments(
+    DepartmentID      int               NOT NULL,
+    DepartmentName    nvarchar(100)     NULL,
+    Budget            decimal(18, 2)    NULL,
+    CONSTRAINT PK__Departme__B2079BCD585FA90C PRIMARY KEY CLUSTERED (DepartmentID)
 )
 
 go
 
 
-IF OBJECT_ID('EMP') IS NOT NULL
-    PRINT '<<< CREATED TABLE EMP >>>'
+IF OBJECT_ID('Departments') IS NOT NULL
+    PRINT '<<< CREATED TABLE Departments >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE EMP >>>'
+    PRINT '<<< FAILED CREATING TABLE Departments >>>'
 go
 
 /* 
- * TABLE: EMP_SKL_MTX 
+ * TABLE: Enrollments 
  */
 
-CREATE TABLE EMP_SKL_MTX(
-    ID         char(10)    NOT NULL,
-    EMP_NMB    char(10)    NOT NULL,
-    LVL        char(10)    NULL,
-    CONSTRAINT PK13 PRIMARY KEY NONCLUSTERED (ID, EMP_NMB)
+CREATE TABLE Enrollments(
+    EnrollmentID    int            NOT NULL,
+    StudentID       int            NULL,
+    CourseID        int            NULL,
+    Grade           nvarchar(2)    NULL,
+    CONSTRAINT PK__Enrollme__7F6877FB4A7D9AB5 PRIMARY KEY CLUSTERED (EnrollmentID)
 )
 
 go
 
 
-IF OBJECT_ID('EMP_SKL_MTX') IS NOT NULL
-    PRINT '<<< CREATED TABLE EMP_SKL_MTX >>>'
+IF OBJECT_ID('Enrollments') IS NOT NULL
+    PRINT '<<< CREATED TABLE Enrollments >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE EMP_SKL_MTX >>>'
+    PRINT '<<< FAILED CREATING TABLE Enrollments >>>'
 go
 
 /* 
- * TABLE: FULL_TIME_EMP 
+ * TABLE: Instructors 
  */
 
-CREATE TABLE FULL_TIME_EMP(
-    EMP_NMB     char(10)    NOT NULL,
-    SALARY      char(10)    NULL,
-    VCT_DAYS    char(10)    NULL,
-    CONSTRAINT PK2 PRIMARY KEY NONCLUSTERED (EMP_NMB)
+CREATE TABLE Instructors(
+    InstructorID    int             NOT NULL,
+    FirstName       nvarchar(50)    NULL,
+    LastName        nvarchar(50)    NULL,
+    HireDate        date            NULL,
+    DepartmentID    int             NULL,
+    CONSTRAINT PK__Instruct__9D010B7B50A368DE PRIMARY KEY CLUSTERED (InstructorID)
 )
 
 go
 
 
-IF OBJECT_ID('FULL_TIME_EMP') IS NOT NULL
-    PRINT '<<< CREATED TABLE FULL_TIME_EMP >>>'
+IF OBJECT_ID('Instructors') IS NOT NULL
+    PRINT '<<< CREATED TABLE Instructors >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE FULL_TIME_EMP >>>'
+    PRINT '<<< FAILED CREATING TABLE Instructors >>>'
 go
 
 /* 
- * TABLE: SKL 
+ * TABLE: Libraries 
  */
 
-CREATE TABLE SKL(
-    ID     char(10)    NOT NULL,
-    NME    char(10)    NOT NULL,
-    DSP    char(10)    NULL,
-    CTY    char(10)    NULL,
-    CONSTRAINT PK5 PRIMARY KEY NONCLUSTERED (ID)
+CREATE TABLE Libraries(
+    LibraryID      int              NOT NULL,
+    LibraryName    nvarchar(100)    NULL,
+    Location       nvarchar(100)    NULL,
+    CONSTRAINT PK__Librarie__A13647BF327333AE PRIMARY KEY CLUSTERED (LibraryID)
 )
 
 go
 
 
-IF OBJECT_ID('SKL') IS NOT NULL
-    PRINT '<<< CREATED TABLE SKL >>>'
+IF OBJECT_ID('Libraries') IS NOT NULL
+    PRINT '<<< CREATED TABLE Libraries >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE SKL >>>'
+    PRINT '<<< FAILED CREATING TABLE Libraries >>>'
 go
 
 /* 
- * TABLE: [SKL TRG_CRS] 
+ * TABLE: LibraryMemberships 
  */
 
-CREATE TABLE [SKL TRG_CRS](
-    ID        char(10)    NOT NULL,
-    CRS_ID    char(10)    NOT NULL,
-    CONSTRAINT PK14 PRIMARY KEY NONCLUSTERED (ID, CRS_ID)
+CREATE TABLE LibraryMemberships(
+    MembershipID      int     NOT NULL,
+    StudentID         int     NULL,
+    LibraryID         int     NULL,
+    MembershipDate    date    NULL,
+    CONSTRAINT PK__LibraryM__92A7859927137C21 PRIMARY KEY CLUSTERED (MembershipID)
 )
 
 go
 
 
-IF OBJECT_ID('SKL TRG_CRS') IS NOT NULL
-    PRINT '<<< CREATED TABLE SKL TRG_CRS >>>'
+IF OBJECT_ID('LibraryMemberships') IS NOT NULL
+    PRINT '<<< CREATED TABLE LibraryMemberships >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE SKL TRG_CRS >>>'
+    PRINT '<<< FAILED CREATING TABLE LibraryMemberships >>>'
 go
 
 /* 
- * TABLE: TRG_CRS 
+ * TABLE: Students 
  */
 
-CREATE TABLE TRG_CRS(
-    CRS_ID      char(10)    NOT NULL,
-    TITLE       char(10)    NULL,
-    SYNOPSIS    char(10)    NULL,
-    CONSTRAINT PK8 PRIMARY KEY NONCLUSTERED (CRS_ID)
+CREATE TABLE Students(
+    StudentID         int             NOT NULL,
+    FirstName         nvarchar(50)    NULL,
+    LastName          nvarchar(50)    NULL,
+    DateOfBirth       date            NULL,
+    Gender            nvarchar(10)    NULL,
+    EnrollmentDate    date            NULL,
+    CONSTRAINT PK__Students__32C52A79DCE94383 PRIMARY KEY CLUSTERED (StudentID)
 )
 
 go
 
 
-IF OBJECT_ID('TRG_CRS') IS NOT NULL
-    PRINT '<<< CREATED TABLE TRG_CRS >>>'
+IF OBJECT_ID('Students') IS NOT NULL
+    PRINT '<<< CREATED TABLE Students >>>'
 ELSE
-    PRINT '<<< FAILED CREATING TABLE TRG_CRS >>>'
+    PRINT '<<< FAILED CREATING TABLE Students >>>'
 go
 
-/* 
- * TABLE: TRG_HST 
- */
-
-CREATE TABLE TRG_HST(
-    EMP_NMB           char(10)    NOT NULL,
-    CRS_ID            char(10)    NOT NULL,
-    COMPLETION_DTE    char(10)    NULL,
-    RESULT            char(10)    NULL,
-    CONSTRAINT PK12 PRIMARY KEY NONCLUSTERED (EMP_NMB, CRS_ID)
-)
-
-go
-
-
-IF OBJECT_ID('TRG_HST') IS NOT NULL
-    PRINT '<<< CREATED TABLE TRG_HST >>>'
-ELSE
-    PRINT '<<< FAILED CREATING TABLE TRG_HST >>>'
-go
-
-
-exec sp_addextendedproperty  
-@name = N'My Property'
-,@value = N'Here is a custom property'
-,@level0type = N'Schema', @level0name = 'dbo'
-,@level1type = N'Table', @level1name = 'EMP'
-go
