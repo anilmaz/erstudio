@@ -1,1024 +1,292 @@
 /*
  * ER/Studio Data Architect SQL Code Generation
- * Company :      IDERA
- * Project :      Sales Order Processing
- * Author :       Product Management
+ * Project :      EnergyAIDemo.DM1
  *
- * Date Created : Thursday, November 21, 2024 14:23:14
+ * Date Created : Friday, June 20, 2025 13:44:20
  * Target DBMS : Databricks
  */
 
 /* 
- * TABLE: Addr_Cmpnnt 
+ * TABLE: ADDRESS 
  */
 
-CREATE TABLE Addr_Cmpnnt
+CREATE TABLE ADDRESS
 (
-    Addr_Cmpnnt_ID    int            NOT NULL,
-    Nme               string         NOT NULL,
-    Dscrptn           string         NOT NULL,
-    Mx_Lngth          int            NOT NULL,
-    List_Ordr         int,
-    Is_Systm_Rqurd    boolean        NOT NULL,
-    Crtd_By           string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp          timestamp      NOT NULL,
-    CONSTRAINT AddressComponentPK PRIMARY KEY (Addr_Cmpnnt_ID) 
+    ADDRESS_ID     int                 NOT NULL,
+    STREET         string              NOT NULL,
+    CITY           string              NOT NULL,
+    STATE          string              NOT NULL,
+    POSTAL_CODE    string              NOT NULL,
+    COUNTRY        string              NOT NULL,
+    LATITUDE       decimal(10, 6),
+    LONGITUDE      decimal(10, 6),
+    CUSTOMER_ID    int                 NOT NULL,
+    CONSTRAINT PK2 PRIMARY KEY (ADDRESS_ID) 
 )
 ;
 
 /* 
- * TABLE: Addr_Dtl 
+ * TABLE: BILL 
  */
 
-CREATE TABLE Addr_Dtl
+CREATE TABLE BILL
 (
-    Addr_Dtl_ID           int            NOT NULL,
-    Addr_Typ_Cmpnnt_ID    int            NOT NULL,
-    Custmr_Addr_ID        int            NOT NULL,
-    Lbl                   string,
-    Addr                  string         NOT NULL,
-    Addr2                 string         NOT NULL,
-    Cty                   string         NOT NULL,
-    State                 string         NOT NULL,
-    Zp_Cde                string         NOT NULL,
-    Zp_Cde_Extnsn         string         NOT NULL,
-    Crtd_By               string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp              timestamp      NOT NULL,
-    CONSTRAINT AddressDetailPK PRIMARY KEY (Addr_Dtl_ID) 
+    BILL_ID                 int                 NOT NULL,
+    BILL_DATE               date                NOT NULL,
+    DUE_DATE                date                NOT NULL,
+    TOTAL_AMOUNT            decimal(10, 2)      NOT NULL,
+    STATUS                  string              NOT NULL,
+    BILLING_PERIOD_START    date                NOT NULL,
+    BILLING_PERIOD_END      date                NOT NULL,
+    CUSTOMER_ID             int                 NOT NULL,
+    TARIFF_ID               int                 NOT NULL,
+    CONSTRAINT PK5 PRIMARY KEY (BILL_ID) 
 )
 ;
 
 /* 
- * TABLE: Addr_Role 
+ * TABLE: CONTACT 
  */
 
-CREATE TABLE Addr_Role
+CREATE TABLE CONTACT
 (
-    Addr_Role_ID    int            NOT NULL,
-    Nme             string         NOT NULL,
-    Dscrptn         string,
-    Crtd_By         string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp        timestamp      NOT NULL,
-    CONSTRAINT AddressRolePK PRIMARY KEY (Addr_Role_ID) 
+    CONTACT_ID      int         NOT NULL,
+    PHONE_NUMBER    string,
+    EMAIL           string,
+    CONTACT_TYPE    string      NOT NULL,
+    CUSTOMER_ID     int,
+    CONSTRAINT PK16 PRIMARY KEY (CONTACT_ID) 
 )
 ;
 
 /* 
- * TABLE: Addr_Typ 
+ * TABLE: CUSTOMER 
  */
 
-CREATE TABLE Addr_Typ
+CREATE TABLE CUSTOMER
 (
-    Addr_Typ_ID    int            NOT NULL,
-    Nme            string         NOT NULL,
-    Dscrptn        string,
-    Is_Dflt        boolean        NOT NULL,
-    Crtd_By        string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp       timestamp      NOT NULL,
-    CONSTRAINT AddressTypePK PRIMARY KEY (Addr_Typ_ID) 
+    CUSTOMER_ID      int         NOT NULL,
+    FIRST_NAME       string      NOT NULL,
+    LAST_NAME        string      NOT NULL,
+    DATE_OF_BIRTH    date,
+    CUSTOMER_TYPE    string      NOT NULL,
+    STATUS           string      NOT NULL,
+    REGION_ID        int         NOT NULL,
+    CONSTRAINT PK1 PRIMARY KEY (CUSTOMER_ID) 
 )
 ;
 
 /* 
- * TABLE: Addr_Typ_Cmpnnt 
+ * TABLE: DIM_COMMISSION_PAYMENT 
  */
 
-CREATE TABLE Addr_Typ_Cmpnnt
+CREATE TABLE DIM_COMMISSION_PAYMENT
 (
-    Addr_Typ_Cmpnnt_ID    int            NOT NULL,
-    Addr_Cmpnnt_ID        int            NOT NULL,
-    Addr_Typ_ID           int            NOT NULL,
-    Seqnce_Nbr            int            NOT NULL,
-    Lbl                   string         NOT NULL,
-    Mn_Rws                int            NOT NULL,
-    Mx_Rws                int,
-    Enfrc_Mx_Rws          boolean        NOT NULL,
-    Is_Mndtry             boolean        NOT NULL,
-    Is_Systm_Rqurd        boolean        NOT NULL,
-    Crtd_By               string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp              timestamp      NOT NULL,
-    CONSTRAINT AddressTypeCompPK PRIMARY KEY (Addr_Typ_Cmpnnt_ID) 
+    COMMISSION_PAYMENT_ID          string       NOT NULL,
+    ORDERNUMBER                    string       NOT NULL,
+    ORDERDATE                      date,
+    COMMISSIONPAYMENTVALUE         int,
+    CUSTOMERPURCHASEORDERNUMBER    string,
+    PAID                           boolean,
+    CUSTOMERREFERENCENUMBER        string       NOT NULL,
+    PAYMENTDATE                    date,
+    CONSTRAINT PK26_1 PRIMARY KEY (COMMISSION_PAYMENT_ID) 
 )
 ;
 
 /* 
- * TABLE: App_Usr 
+ * TABLE: EMPLOYEE 
  */
 
-CREATE TABLE App_Usr
+CREATE TABLE EMPLOYEE
 (
-    App_Usr_ID    int            NOT NULL,
-    Nme           string         NOT NULL,
-    Lgn           string         NOT NULL,
-    Crtd_By       string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp      timestamp      NOT NULL,
-    CONSTRAINT AppUserPK PRIMARY KEY (App_Usr_ID) 
+    FIRST_NAME         string      NOT NULL,
+    Demo               string,
+    LAST_NAME          string      NOT NULL,
+    EMPLOYEE_NUMBER    string      NOT NULL,
+    POSITION           string      NOT NULL,
+    HIRE_DATE          date        NOT NULL,
+    STATUS             string      NOT NULL
+)
+USING DELTA
+PARTITIONED BY (FIRST_NAME)
+CLUSTER BY (LAST_NAME)
+;
+
+/* 
+ * TABLE: METER 
+ */
+
+CREATE TABLE METER
+(
+    METER_ID             int         NOT NULL,
+    SERIAL_NUMBER        string      NOT NULL,
+    INSTALLATION_DATE    date        NOT NULL,
+    STATUS               string      NOT NULL,
+    METER_TYPE           string      NOT NULL,
+    CUSTOMER_ID          int         NOT NULL,
+    ADDRESS_ID           int         NOT NULL,
+    CONSTRAINT PK3 PRIMARY KEY (METER_ID) 
 )
 ;
 
 /* 
- * TABLE: Authrzd_Prdct_Discnt 
+ * TABLE: METER_READING 
  */
 
-CREATE TABLE Authrzd_Prdct_Discnt
+CREATE TABLE METER_READING
 (
-    Auth_Prdct_Discnt_ID    int            NOT NULL,
-    Prdct_Discnt_ID         int            NOT NULL,
-    App_Usr_ID              int            NOT NULL,
-    Lbl                     string         NOT NULL,
-    Strt_Dte                date,
-    End_Dte                 date,
-    Crtd_By                 string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp                timestamp      NOT NULL,
-    CONSTRAINT AuthProductDiscountPK PRIMARY KEY (Auth_Prdct_Discnt_ID) 
+    READING_ID       int                 NOT NULL,
+    METER_ID         int                 NOT NULL,
+    READING_DATE     date                NOT NULL,
+    READING_VALUE    decimal(12, 3)      NOT NULL,
+    READING_TYPE     string              NOT NULL,
+    USAGE_ID         int                 NOT NULL,
+    BILL_ID          int                 NOT NULL,
+    CONSTRAINT PK4 PRIMARY KEY (READING_ID, METER_ID) 
 )
 ;
 
 /* 
- * TABLE: Bill_Mtrls 
+ * TABLE: OUTAGE 
  */
 
-CREATE TABLE Bill_Mtrls
+CREATE TABLE OUTAGE
 (
-    Bill_Mtrls_ID     int            NOT NULL,
-    Prt_ID            int            NOT NULL,
-    Prdct_Cnfig_ID    int            NOT NULL,
-    Qntty             int            NOT NULL,
-    Lbl               string         NOT NULL,
-    RwTmStmp          timestamp      NOT NULL,
-    CONSTRAINT PK153 PRIMARY KEY (Bill_Mtrls_ID) 
+    OUTAGE_ID             int            NOT NULL,
+    START_TIME            timestamp      NOT NULL,
+    END_TIME              timestamp,
+    CAUSE                 string,
+    AFFECTED_CUSTOMERS    int,
+    STATUS                string         NOT NULL,
+    CONSTRAINT PK9 PRIMARY KEY (OUTAGE_ID) 
 )
 ;
 
 /* 
- * TABLE: Cmmssn_Credt 
+ * TABLE: PAYMENT 
  */
 
-CREATE TABLE Cmmssn_Credt
+CREATE TABLE PAYMENT
 (
-    Cmmssn_Credt_ID    int            NOT NULL,
-    Sls_Ordr_ID        int            NOT NULL,
-    Slsprsn_ID         int            NOT NULL,
-    Cmmssn_Shr         tinyint        NOT NULL,
-    Crtd_By            string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp           timestamp      NOT NULL,
-    CONSTRAINT CommissionPK PRIMARY KEY (Cmmssn_Credt_ID) 
+    PAYMENT_ID          int                 NOT NULL,
+    PAYMENT_DATE        date                NOT NULL,
+    AMOUNT              decimal(10, 2)      NOT NULL,
+    PAYMENT_METHOD      string              NOT NULL,
+    REFERENCE_NUMBER    string,
+    BILL_ID             int,
+    CONSTRAINT PK6 PRIMARY KEY (PAYMENT_ID) 
 )
 ;
 
 /* 
- * TABLE: Custmr 
+ * TABLE: POWER_LINE 
  */
 
-CREATE TABLE Custmr
+CREATE TABLE POWER_LINE
 (
-    Custmr_ID           int            NOT NULL,
-    Frst_Nme            string         NOT NULL,
-    Lst_Nme             string         NOT NULL,
-    Cmpny_Nme           string         NOT NULL,
-    Eml_Addr            string,
-    Onyx_ID             string,
-    Is_Exstng_Custmr    boolean        NOT NULL,
-    Crtd_By             string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp            timestamp      NOT NULL,
-    CONSTRAINT CustomerPK PRIMARY KEY (Custmr_ID) 
+    POWER_LINE_ID     int                 NOT NULL,
+    LINE_NAME         string              NOT NULL,
+    VOLTAGE_KV        decimal(8, 2)       NOT NULL,
+    LENGTH_KM         decimal(10, 2)      NOT NULL,
+    STATUS            string              NOT NULL,
+    TRANSFORMER_ID    int                 NOT NULL,
+    CONSTRAINT PK14 PRIMARY KEY (POWER_LINE_ID) 
 )
 ;
 
 /* 
- * TABLE: Custmr_Addr 
+ * TABLE: REGION 
  */
 
-CREATE TABLE Custmr_Addr
+CREATE TABLE REGION
 (
-    Custmr_Addr_ID    int            NOT NULL,
-    Addr_Typ_ID       int            NOT NULL,
-    Custmr_ID         int            NOT NULL,
-    Lbl               string,
-    Is_Dflt           boolean        NOT NULL,
-    Crtd_By           string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp          timestamp      NOT NULL,
-    CONSTRAINT CustomerAddressPK PRIMARY KEY (Custmr_Addr_ID) 
+    REGION_ID      int         NOT NULL,
+    REGION_NAME    string      NOT NULL,
+    DESCRIPTION    string,
+    OUTAGE_ID      int         NOT NULL,
+    CONSTRAINT PK15 PRIMARY KEY (REGION_ID) 
 )
 ;
 
 /* 
- * TABLE: Custmr_Phn 
+ * TABLE: SERVICE_REQUEST 
  */
 
-CREATE TABLE Custmr_Phn
+CREATE TABLE SERVICE_REQUEST
 (
-    Custmr_Phn_ID    int            NOT NULL,
-    Custmr_ID        int            NOT NULL,
-    Phn_Role_ID      int            NOT NULL,
-    Area_Cde         string         NOT NULL,
-    Phn              string         NOT NULL,
-    Extnsn           string,
-    Is_Dflt          boolean        NOT NULL,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT CustomerPhonePK PRIMARY KEY (Custmr_Phn_ID) 
+    REQUEST_ID      int         NOT NULL,
+    REQUEST_DATE    date        NOT NULL,
+    REQUEST_TYPE    string      NOT NULL,
+    STATUS          string      NOT NULL,
+    DESCRIPTION     string,
+    CUSTOMER_ID     int         NOT NULL,
+    CONSTRAINT PK10 PRIMARY KEY (REQUEST_ID) 
 )
 ;
 
 /* 
- * TABLE: DB_Pltfrm 
+ * TABLE: SUBSTATION 
  */
 
-CREATE TABLE DB_Pltfrm
+CREATE TABLE SUBSTATION
 (
-    DB_Pltfrm_ID    int            NOT NULL,
-    Nme             string         NOT NULL,
-    Dscrptn         string         NOT NULL,
-    Crtd_By         string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp        timestamp      NOT NULL,
-    CONSTRAINT DBPlatformPK PRIMARY KEY (DB_Pltfrm_ID) 
+    SUBSTATION_ID    int                 NOT NULL,
+    NAME             string              NOT NULL,
+    CAPACITY_MW      decimal(10, 2)      NOT NULL,
+    STATUS           string              NOT NULL,
+    OUTAGE_ID        int,
+    REGION_ID        int                 NOT NULL,
+    CONSTRAINT PK12 PRIMARY KEY (SUBSTATION_ID) 
 )
 ;
 
 /* 
- * TABLE: Discnt_Lvl 
+ * TABLE: TARIFF 
  */
 
-CREATE TABLE Discnt_Lvl
+CREATE TABLE TARIFF
 (
-    Discnt_Lvl_ID    int            NOT NULL,
-    Seqnce_Nbr       int            NOT NULL,
-    Discnt_Pct       tinyint        NOT NULL,
-    Strt_Dte         date,
-    End_Dte          date,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT DiscountLevelPK PRIMARY KEY (Discnt_Lvl_ID) 
+    TARIFF_ID       int                 NOT NULL,
+    TARIFF_NAME     string              NOT NULL,
+    DESCRIPTION     string,
+    RATE_PER_KWH    decimal(8, 4)       NOT NULL,
+    FIXED_CHARGE    decimal(10, 2)      NOT NULL,
+    TARIFF_TYPE     string              NOT NULL,
+    CONSTRAINT PK7 PRIMARY KEY (TARIFF_ID) 
 )
 ;
 
 /* 
- * TABLE: Phn_Role 
+ * TABLE: TRANSFORMER 
  */
 
-CREATE TABLE Phn_Role
+CREATE TABLE TRANSFORMER
 (
-    Phn_Role_ID    int            NOT NULL,
-    Nme            string         NOT NULL,
-    Dscrptn        string,
-    Is_Dflt        boolean        NOT NULL,
-    Crtd_By        string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp       timestamp      NOT NULL,
-    CONSTRAINT PhoneRolePK PRIMARY KEY (Phn_Role_ID) 
+    TRANSFORMER_ID       int                 NOT NULL,
+    SERIAL_NUMBER        string              NOT NULL,
+    CAPACITY_KVA         decimal(10, 2)      NOT NULL,
+    INSTALLATION_DATE    date                NOT NULL,
+    STATUS               string              NOT NULL,
+    OUTAGE_ID            int,
+    SUBSTATION_ID        int                 NOT NULL,
+    CONSTRAINT PK13 PRIMARY KEY (TRANSFORMER_ID) 
 )
 ;
 
 /* 
- * TABLE: Prdct 
+ * TABLE: USAGE 
  */
 
-CREATE TABLE Prdct
+CREATE TABLE USAGE
 (
-    Prdct_ID    int            NOT NULL,
-    Nme         string         NOT NULL,
-    Dscrptn     string         NOT NULL,
-    Crtd_By     string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp    timestamp      NOT NULL,
-    CONSTRAINT ProductPK PRIMARY KEY (Prdct_ID) 
+    USAGE_ID       int                 NOT NULL,
+    BILL_ID        int                 NOT NULL,
+    START_DATE     date                NOT NULL,
+    END_DATE       date                NOT NULL,
+    KWH_USED       decimal(12, 3)      NOT NULL,
+    PEAK_DEMAND    decimal(10, 3),
+    CONSTRAINT PK8 PRIMARY KEY (USAGE_ID, BILL_ID) 
 )
 ;
-
-/* 
- * TABLE: Prdct_Cnfig 
- */
-
-CREATE TABLE Prdct_Cnfig
-(
-    Prdct_Cnfig_ID          int                 NOT NULL,
-    Prdct_Typ_ID            int                 NOT NULL,
-    Usr_Cnt_ID              int                 NOT NULL,
-    Prdct_Vrsn_Pltfrm_ID    int                 NOT NULL,
-    Grt_Plns_ID             string              NOT NULL,
-    Dscrptn                 string              NOT NULL,
-    List_Prc                decimal(19, 2)      NOT NULL,
-    Crtd_By                 string             DEFAULT GETUSER() NOT NULL,
-    RwTmStmp                timestamp           NOT NULL,
-    CONSTRAINT ProductConfigurationPK PRIMARY KEY (Prdct_Cnfig_ID) 
-)
-;
-
-/* 
- * TABLE: Prdct_Discnt 
- */
-
-CREATE TABLE Prdct_Discnt
-(
-    Prdct_Discnt_ID    int            NOT NULL,
-    Discnt_Lvl_ID      int            NOT NULL,
-    Prdct_Cnfig_ID     int            NOT NULL,
-    Lbl                string         NOT NULL,
-    Strt_Dte           date,
-    End_Dte            date,
-    Crtd_By            string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp           timestamp      NOT NULL,
-    CONSTRAINT ProductDiscountPK PRIMARY KEY (Prdct_Discnt_ID) 
-)
-;
-
-/* 
- * TABLE: Prdct_Typ 
- */
-
-CREATE TABLE Prdct_Typ
-(
-    Prdct_Typ_ID    int            NOT NULL,
-    Nme             string         NOT NULL,
-    Dscrptn         string,
-    Is_Dflt         boolean        NOT NULL,
-    Is_Nw_Licns     boolean        NOT NULL,
-    Crtd_By         string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp        timestamp      NOT NULL,
-    CONSTRAINT ProductTypePK PRIMARY KEY (Prdct_Typ_ID) 
-)
-;
-
-/* 
- * TABLE: Prdct_Vrsn 
- */
-
-CREATE TABLE Prdct_Vrsn
-(
-    Prdct_Vrsn_ID    int            NOT NULL,
-    Prdct_ID         int            NOT NULL,
-    Vrsn_Nbr         string         NOT NULL,
-    Lbl              string,
-    Is_Dflt          boolean        NOT NULL,
-    Is_Supprtd       boolean        NOT NULL,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT ProductVersionPK PRIMARY KEY (Prdct_Vrsn_ID) 
-)
-;
-
-/* 
- * TABLE: Prdct_Vrsn_Pltfrm 
- */
-
-CREATE TABLE Prdct_Vrsn_Pltfrm
-(
-    Prdct_Vrsn_Pltfrm_ID    int            NOT NULL,
-    DB_Pltfrm_ID            int            NOT NULL,
-    Prdct_Vrsn_ID           int            NOT NULL,
-    Lbl                     string         NOT NULL,
-    RwTmStmp                timestamp      NOT NULL,
-    CONSTRAINT PK147 PRIMARY KEY (Prdct_Vrsn_Pltfrm_ID) 
-)
-;
-
-/* 
- * TABLE: Prt 
- */
-
-CREATE TABLE Prt
-(
-    Prt_ID      int            NOT NULL,
-    Nme         string         NOT NULL,
-    Dscrptn     string,
-    RwTmStmp    timestamp      NOT NULL,
-    CONSTRAINT PK152 PRIMARY KEY (Prt_ID) 
-)
-;
-
-/* 
- * TABLE: Pymnt_Dtl 
- */
-
-CREATE TABLE Pymnt_Dtl
-(
-    Pymnt_Dtl_ID         int            NOT NULL,
-    Pymnt_Dtl_Typ_ID     int            NOT NULL,
-    Sls_Ordr_Pymnt_ID    int            NOT NULL,
-    Lbl                  string,
-    Pymnt_Dtl            string         NOT NULL,
-    Crtd_By              string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp             timestamp      NOT NULL,
-    CONSTRAINT PaymentDetailPK PRIMARY KEY (Pymnt_Dtl_ID) 
-)
-;
-
-/* 
- * TABLE: Pymnt_Dtl_Typ 
- */
-
-CREATE TABLE Pymnt_Dtl_Typ
-(
-    Pymnt_Dtl_Typ_ID    int            NOT NULL,
-    Pymnt_Mthd_ID       int            NOT NULL,
-    Seqnce_Nbr          int            NOT NULL,
-    Nme                 string         NOT NULL,
-    Dscrptn             string,
-    Mn_Lngth            int            NOT NULL,
-    Mx_Lngth            int            NOT NULL,
-    Is_Mndtry           boolean        NOT NULL,
-    Crtd_By             string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp            timestamp      NOT NULL,
-    CONSTRAINT PaymentDetailTypePK PRIMARY KEY (Pymnt_Dtl_Typ_ID) 
-)
-;
-
-/* 
- * TABLE: Pymnt_Mthd 
- */
-
-CREATE TABLE Pymnt_Mthd
-(
-    Pymnt_Mthd_ID    int            NOT NULL,
-    Nme              string         NOT NULL,
-    Dscrptn          string,
-    Is_Dflt          boolean        NOT NULL,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT PaymentTypePK PRIMARY KEY (Pymnt_Mthd_ID) 
-)
-;
-
-/* 
- * TABLE: Shppng_Crt 
- */
-
-CREATE TABLE Shppng_Crt
-(
-    Shppng_Crt_ID    int            NOT NULL,
-    Is_Prcssd        boolean        NOT NULL,
-    Crte_Dte         timestamp      NOT NULL,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT PK146 PRIMARY KEY (Shppng_Crt_ID) 
-)
-;
-
-/* 
- * TABLE: Shppng_Crt_Dtl 
- */
-
-CREATE TABLE Shppng_Crt_Dtl
-(
-    Shppng_Crt_Dtl_ID    int                 NOT NULL,
-    Shppng_Crt_ID        int                 NOT NULL,
-    Prdct_Cnfig_ID       int                 NOT NULL,
-    Qntty                int                 NOT NULL,
-    List_Prc             decimal(19, 2)      NOT NULL,
-    Unt_Prc              decimal(19, 2)      NOT NULL,
-    RwTmStmp             timestamp           NOT NULL,
-    CONSTRAINT ShoppingCartPK PRIMARY KEY (Shppng_Crt_Dtl_ID) 
-)
-;
-
-/* 
- * TABLE: Shppng_Instructn 
- */
-
-CREATE TABLE Shppng_Instructn
-(
-    Shppng_Instructn_ID    int            NOT NULL,
-    Sls_Ordr_ID            int            NOT NULL,
-    Shppng_Mthd_ID         int            NOT NULL,
-    Car_Nme                string,
-    Car_Accnt_Nbr          string,
-    Dlvry_Mthd             string,
-    Dlvry_Instructns       string,
-    Crtd_By                string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp               timestamp      NOT NULL,
-    CONSTRAINT ShippingInstructionPK PRIMARY KEY (Shppng_Instructn_ID) 
-)
-;
-
-/* 
- * TABLE: Shppng_Mthd 
- */
-
-CREATE TABLE Shppng_Mthd
-(
-    Shppng_Mthd_ID     int                 NOT NULL,
-    Nme                string              NOT NULL,
-    Dscrptn            string,
-    Shppng_Chrg        decimal(19, 2)      NOT NULL,
-    Is_Dflt            boolean             NOT NULL,
-    Is_Custmr_Spcfd    boolean             NOT NULL,
-    Crtd_By            string             DEFAULT GETUSER() NOT NULL,
-    RwTmStmp           timestamp           NOT NULL,
-    CONSTRAINT ShippingMethodPK PRIMARY KEY (Shppng_Mthd_ID) 
-)
-;
-
-/* 
- * TABLE: Sls_Ordr 
- */
-
-CREATE TABLE Sls_Ordr
-(
-    Sls_Ordr_ID        int                 NOT NULL,
-    Shppng_Crt_ID      int                 NOT NULL,
-    Sls_Tax_Rate_ID    int,
-    Sls_Ordr_Typ_ID    int                 NOT NULL,
-    Custmr_ID          int                 NOT NULL,
-    Sl_Dt              date,
-    Is_Txbl            boolean             NOT NULL,
-    Sls_Tax            decimal(19, 2)      NOT NULL,
-    Crtd_By            string             DEFAULT GETUSER() NOT NULL,
-    RwTmStmp           timestamp           NOT NULL,
-    CONSTRAINT SalesOrderPK PRIMARY KEY (Sls_Ordr_ID) 
-)
-;
-
-/* 
- * TABLE: Sls_Ordr_Addr 
- */
-
-CREATE TABLE Sls_Ordr_Addr
-(
-    Sls_Ordr_Addr_ID    int            NOT NULL,
-    Addr_Role_ID        int            NOT NULL,
-    Sls_Ordr_ID         int            NOT NULL,
-    Custmr_Addr_ID      int            NOT NULL,
-    Lbl                 string,
-    Crtd_By             string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp            timestamp      NOT NULL,
-    CONSTRAINT SalesOrderAddressPK PRIMARY KEY (Sls_Ordr_Addr_ID) 
-)
-;
-
-/* 
- * TABLE: Sls_Ordr_Line 
- */
-
-CREATE TABLE Sls_Ordr_Line
-(
-    Sls_Ordr_Line_ID     int                 NOT NULL,
-    Shppng_Crt_Dtl_ID    int                 NOT NULL,
-    Prdct_Cnfig_ID       int                 NOT NULL,
-    Sls_Ordr_ID          int                 NOT NULL,
-    Qntty                int                 NOT NULL,
-    List_Prc             decimal(19, 2)      NOT NULL,
-    Unt_Prc              decimal(19, 2)      NOT NULL,
-    Extndd_Prc           decimal(19, 2)      NOT NULL,
-    Crtd_By              string             DEFAULT GETUSER() NOT NULL,
-    RwTmStmp             timestamp           NOT NULL,
-    CONSTRAINT SalesOrderLinePK PRIMARY KEY (Sls_Ordr_Line_ID) 
-)
-;
-
-/* 
- * TABLE: Sls_Ordr_Pymnt 
- */
-
-CREATE TABLE Sls_Ordr_Pymnt
-(
-    Sls_Ordr_Pymnt_ID    int                 NOT NULL,
-    Pymnt_Mthd_ID        int                 NOT NULL,
-    Sls_Ordr_ID          int                 NOT NULL,
-    Amnt                 decimal(19, 2)      NOT NULL,
-    Crtd_By              string             DEFAULT GETUSER() NOT NULL,
-    RwTmStmp             timestamp           NOT NULL,
-    CONSTRAINT SalesOrderPaymentPK PRIMARY KEY (Sls_Ordr_Pymnt_ID) 
-)
-;
-
-/* 
- * TABLE: Sls_Ordr_Typ 
- */
-
-CREATE TABLE Sls_Ordr_Typ
-(
-    Sls_Ordr_Typ_ID    int            NOT NULL,
-    Nme                string         NOT NULL,
-    Dscrptn            string,
-    Crtd_By            string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp           timestamp      NOT NULL,
-    CONSTRAINT SalesOrderTypePK PRIMARY KEY (Sls_Ordr_Typ_ID) 
-)
-;
-
-/* 
- * TABLE: Sls_Tax_Rate 
- */
-
-CREATE TABLE Sls_Tax_Rate
-(
-    Sls_Tax_Rate_ID    int            NOT NULL,
-    Zp_Cde_ID          int            NOT NULL,
-    Grss_Tx_Rt         tinyint        NOT NULL,
-    Crtd_By            string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp           timestamp      NOT NULL,
-    CONSTRAINT SalesTaxRatePK PRIMARY KEY (Sls_Tax_Rate_ID) 
-)
-;
-
-/* 
- * TABLE: Slsprsn 
- */
-
-CREATE TABLE Slsprsn
-(
-    Slsprsn_ID    int            NOT NULL,
-    Nme           string         NOT NULL,
-    Dscrptn       string,
-    Crtd_By       string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp      timestamp      NOT NULL,
-    CONSTRAINT SalespersonPK PRIMARY KEY (Slsprsn_ID) 
-)
-;
-
-/* 
- * TABLE: Txbl_Prdct 
- */
-
-CREATE TABLE Txbl_Prdct
-(
-    Txbl_Prdct_ID     int            NOT NULL,
-    Prdct_Cnfig_ID    int            NOT NULL,
-    Txbl_State_ID     int            NOT NULL,
-    Lbl               string,
-    Txbl_Shr          tinyint        NOT NULL,
-    Crtd_By           string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp          timestamp      NOT NULL,
-    CONSTRAINT TaxableProductID PRIMARY KEY (Txbl_Prdct_ID) 
-)
-;
-
-/* 
- * TABLE: Txbl_State 
- */
-
-CREATE TABLE Txbl_State
-(
-    Txbl_State_ID    int            NOT NULL,
-    Nme              string         NOT NULL,
-    State_Cd         string         NOT NULL,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT TaxableStatePK PRIMARY KEY (Txbl_State_ID) 
-)
-;
-
-/* 
- * TABLE: Usr_Cnt 
- */
-
-CREATE TABLE Usr_Cnt
-(
-    Usr_Cnt_ID    int            NOT NULL,
-    Nme           string         NOT NULL,
-    Qntty         int,
-    Is_Unlmtd     boolean        NOT NULL,
-    RwTmStmp      timestamp      NOT NULL,
-    CONSTRAINT PK151 PRIMARY KEY (Usr_Cnt_ID) 
-)
-;
-
-/* 
- * TABLE: Zp_Cde 
- */
-
-CREATE TABLE Zp_Cde
-(
-    Zp_Cde_ID        int            NOT NULL,
-    Txbl_State_ID    int            NOT NULL,
-    Zp_Cde           string         NOT NULL,
-    Crtd_By          string        DEFAULT GETUSER() NOT NULL,
-    RwTmStmp         timestamp      NOT NULL,
-    CONSTRAINT ZipCodePK PRIMARY KEY (Zp_Cde_ID) 
-)
-;
-
-/* 
- * TABLE: Addr_Dtl 
- */
-
-ALTER TABLE Addr_Dtl ADD CONSTRAINT RefCustmr_Addr31 
-    FOREIGN KEY (Custmr_Addr_ID)
-    REFERENCES Custmr_Addr
-;
-
-ALTER TABLE Addr_Dtl ADD CONSTRAINT RefAddr_Typ_Cmpnnt36 
-    FOREIGN KEY (Addr_Typ_Cmpnnt_ID)
-    REFERENCES Addr_Typ_Cmpnnt
-;
-
-
-/* 
- * TABLE: Addr_Typ_Cmpnnt 
- */
-
-ALTER TABLE Addr_Typ_Cmpnnt ADD CONSTRAINT RefAddr_Typ4 
-    FOREIGN KEY (Addr_Typ_ID)
-    REFERENCES Addr_Typ
-;
-
-ALTER TABLE Addr_Typ_Cmpnnt ADD CONSTRAINT RefAddr_Cmpnnt21 
-    FOREIGN KEY (Addr_Cmpnnt_ID)
-    REFERENCES Addr_Cmpnnt
-;
-
-
-/* 
- * TABLE: Authrzd_Prdct_Discnt 
- */
-
-ALTER TABLE Authrzd_Prdct_Discnt ADD CONSTRAINT RefApp_Usr13 
-    FOREIGN KEY (App_Usr_ID)
-    REFERENCES App_Usr
-;
-
-ALTER TABLE Authrzd_Prdct_Discnt ADD CONSTRAINT RefPrdct_Discnt29 
-    FOREIGN KEY (Prdct_Discnt_ID)
-    REFERENCES Prdct_Discnt
-;
-
-
-/* 
- * TABLE: Bill_Mtrls 
- */
-
-ALTER TABLE Bill_Mtrls ADD CONSTRAINT RefPrt1 
-    FOREIGN KEY (Prt_ID)
-    REFERENCES Prt
-;
-
-ALTER TABLE Bill_Mtrls ADD CONSTRAINT RefPrdct_Cnfig30 
-    FOREIGN KEY (Prdct_Cnfig_ID)
-    REFERENCES Prdct_Cnfig
-;
-
-
-/* 
- * TABLE: Cmmssn_Credt 
- */
-
-ALTER TABLE Cmmssn_Credt ADD CONSTRAINT RefSlsprsn10 
-    FOREIGN KEY (Slsprsn_ID)
-    REFERENCES Slsprsn
-;
-
-ALTER TABLE Cmmssn_Credt ADD CONSTRAINT RefSls_Ordr39 
-    FOREIGN KEY (Sls_Ordr_ID)
-    REFERENCES Sls_Ordr
-;
-
-
-/* 
- * TABLE: Custmr_Addr 
- */
-
-ALTER TABLE Custmr_Addr ADD CONSTRAINT RefCustmr12 
-    FOREIGN KEY (Custmr_ID)
-    REFERENCES Custmr
-;
-
-ALTER TABLE Custmr_Addr ADD CONSTRAINT RefAddr_Typ14 
-    FOREIGN KEY (Addr_Typ_ID)
-    REFERENCES Addr_Typ
-;
-
-
-/* 
- * TABLE: Custmr_Phn 
- */
-
-ALTER TABLE Custmr_Phn ADD CONSTRAINT RefPhn_Role16 
-    FOREIGN KEY (Phn_Role_ID)
-    REFERENCES Phn_Role
-;
-
-ALTER TABLE Custmr_Phn ADD CONSTRAINT RefCustmr41 
-    FOREIGN KEY (Custmr_ID)
-    REFERENCES Custmr
-;
-
-
-/* 
- * TABLE: Prdct_Cnfig 
- */
-
-ALTER TABLE Prdct_Cnfig ADD CONSTRAINT RefPrdct_Typ5 
-    FOREIGN KEY (Prdct_Typ_ID)
-    REFERENCES Prdct_Typ
-;
-
-ALTER TABLE Prdct_Cnfig ADD CONSTRAINT RefPrdct_Vrsn_Pltfrm11 
-    FOREIGN KEY (Prdct_Vrsn_Pltfrm_ID)
-    REFERENCES Prdct_Vrsn_Pltfrm
-;
-
-ALTER TABLE Prdct_Cnfig ADD CONSTRAINT RefUsr_Cnt19 
-    FOREIGN KEY (Usr_Cnt_ID)
-    REFERENCES Usr_Cnt
-;
-
-
-/* 
- * TABLE: Prdct_Discnt 
- */
-
-ALTER TABLE Prdct_Discnt ADD CONSTRAINT RefDiscnt_Lvl9 
-    FOREIGN KEY (Discnt_Lvl_ID)
-    REFERENCES Discnt_Lvl
-;
-
-ALTER TABLE Prdct_Discnt ADD CONSTRAINT RefPrdct_Cnfig38 
-    FOREIGN KEY (Prdct_Cnfig_ID)
-    REFERENCES Prdct_Cnfig
-;
-
-
-/* 
- * TABLE: Prdct_Vrsn 
- */
-
-ALTER TABLE Prdct_Vrsn ADD CONSTRAINT RefPrdct32 
-    FOREIGN KEY (Prdct_ID)
-    REFERENCES Prdct
-;
-
-
-/* 
- * TABLE: Prdct_Vrsn_Pltfrm 
- */
-
-ALTER TABLE Prdct_Vrsn_Pltfrm ADD CONSTRAINT RefPrdct_Vrsn24 
-    FOREIGN KEY (Prdct_Vrsn_ID)
-    REFERENCES Prdct_Vrsn
-;
-
-ALTER TABLE Prdct_Vrsn_Pltfrm ADD CONSTRAINT RefDB_Pltfrm40 
-    FOREIGN KEY (DB_Pltfrm_ID)
-    REFERENCES DB_Pltfrm
-;
-
-
-/* 
- * TABLE: Pymnt_Dtl 
- */
-
-ALTER TABLE Pymnt_Dtl ADD CONSTRAINT RefSls_Ordr_Pymnt28 
-    FOREIGN KEY (Sls_Ordr_Pymnt_ID)
-    REFERENCES Sls_Ordr_Pymnt
-;
-
-ALTER TABLE Pymnt_Dtl ADD CONSTRAINT RefPymnt_Dtl_Typ45 
-    FOREIGN KEY (Pymnt_Dtl_Typ_ID)
-    REFERENCES Pymnt_Dtl_Typ
-;
-
-
-/* 
- * TABLE: Pymnt_Dtl_Typ 
- */
-
-ALTER TABLE Pymnt_Dtl_Typ ADD CONSTRAINT RefPymnt_Mthd7 
-    FOREIGN KEY (Pymnt_Mthd_ID)
-    REFERENCES Pymnt_Mthd
-;
-
-
-/* 
- * TABLE: Shppng_Crt_Dtl 
- */
-
-ALTER TABLE Shppng_Crt_Dtl ADD CONSTRAINT RefShppng_Crt8 
-    FOREIGN KEY (Shppng_Crt_ID)
-    REFERENCES Shppng_Crt
-;
-
-ALTER TABLE Shppng_Crt_Dtl ADD CONSTRAINT RefPrdct_Cnfig26 
-    FOREIGN KEY (Prdct_Cnfig_ID)
-    REFERENCES Prdct_Cnfig
-;
-
-
-/* 
- * TABLE: Shppng_Instructn 
- */
-
-ALTER TABLE Shppng_Instructn ADD CONSTRAINT RefSls_Ordr17 
-    FOREIGN KEY (Sls_Ordr_ID)
-    REFERENCES Sls_Ordr
-;
-
-ALTER TABLE Shppng_Instructn ADD CONSTRAINT RefShppng_Mthd44 
-    FOREIGN KEY (Shppng_Mthd_ID)
-    REFERENCES Shppng_Mthd
-;
-
-
-/* 
- * TABLE: Sls_Ordr 
- */
-
-ALTER TABLE Sls_Ordr ADD CONSTRAINT RefSls_Tax_Rate15 
-    FOREIGN KEY (Sls_Tax_Rate_ID)
-    REFERENCES Sls_Tax_Rate
-;
-
-ALTER TABLE Sls_Ordr ADD CONSTRAINT RefSls_Ordr_Typ20 
-    FOREIGN KEY (Sls_Ordr_Typ_ID)
-    REFERENCES Sls_Ordr_Typ
-;
-
-ALTER TABLE Sls_Ordr ADD CONSTRAINT RefCustmr35 
-    FOREIGN KEY (Custmr_ID)
-    REFERENCES Custmr
-;
-
-ALTER TABLE Sls_Ordr ADD CONSTRAINT RefShppng_Crt37 
-    FOREIGN KEY (Shppng_Crt_ID)
-    REFERENCES Shppng_Crt
-;
-
-
-/* 
- * TABLE: Sls_Ordr_Addr 
- */
-
-ALTER TABLE Sls_Ordr_Addr ADD CONSTRAINT RefAddr_Role18 
-    FOREIGN KEY (Addr_Role_ID)
-    REFERENCES Addr_Role
-;
-
-ALTER TABLE Sls_Ordr_Addr ADD CONSTRAINT RefSls_Ordr25 
-    FOREIGN KEY (Sls_Ordr_ID)
-    REFERENCES Sls_Ordr
-;
-
-ALTER TABLE Sls_Ordr_Addr ADD CONSTRAINT RefCustmr_Addr27 
-    FOREIGN KEY (Custmr_Addr_ID)
-    REFERENCES Custmr_Addr
-;
-
-
-/* 
- * TABLE: Sls_Ordr_Line 
- */
-
-ALTER TABLE Sls_Ordr_Line ADD CONSTRAINT RefSls_Ordr22 
-    FOREIGN KEY (Sls_Ordr_ID)
-    REFERENCES Sls_Ordr
-;
-
-ALTER TABLE Sls_Ordr_Line ADD CONSTRAINT RefPrdct_Cnfig23 
-    FOREIGN KEY (Prdct_Cnfig_ID)
-    REFERENCES Prdct_Cnfig
-;
-
-ALTER TABLE Sls_Ordr_Line ADD CONSTRAINT RefShppng_Crt_Dtl43 
-    FOREIGN KEY (Shppng_Crt_Dtl_ID)
-    REFERENCES Shppng_Crt_Dtl
-;
-
-
-/* 
- * TABLE: Sls_Ordr_Pymnt 
- */
-
-ALTER TABLE Sls_Ordr_Pymnt ADD CONSTRAINT RefPymnt_Mthd3 
-    FOREIGN KEY (Pymnt_Mthd_ID)
-    REFERENCES Pymnt_Mthd
-;
-
-ALTER TABLE Sls_Ordr_Pymnt ADD CONSTRAINT RefSls_Ordr34 
-    FOREIGN KEY (Sls_Ordr_ID)
-    REFERENCES Sls_Ordr
-;
-
-
-/* 
- * TABLE: Sls_Tax_Rate 
- */
-
-ALTER TABLE Sls_Tax_Rate ADD CONSTRAINT RefZp_Cde42 
-    FOREIGN KEY (Zp_Cde_ID)
-    REFERENCES Zp_Cde
-;
-
-
-/* 
- * TABLE: Txbl_Prdct 
- */
-
-ALTER TABLE Txbl_Prdct ADD CONSTRAINT RefPrdct_Cnfig2 
-    FOREIGN KEY (Prdct_Cnfig_ID)
-    REFERENCES Prdct_Cnfig
-;
-
-ALTER TABLE Txbl_Prdct ADD CONSTRAINT RefTxbl_State6 
-    FOREIGN KEY (Txbl_State_ID)
-    REFERENCES Txbl_State
-;
-
-
-/* 
- * TABLE: Zp_Cde 
- */
-
-ALTER TABLE Zp_Cde ADD CONSTRAINT RefTxbl_State33 
-    FOREIGN KEY (Txbl_State_ID)
-    REFERENCES Txbl_State
-;
-
 
